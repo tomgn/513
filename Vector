@@ -7,7 +7,6 @@
 ----------------------------
 Question|
 ---------
-注:本小节内容均不投影到Question中，这只是在ofis无法用Sketch的权宜之计，待回家各个击破，直接作为内容进行补充。
 
 ----------------------------
 Index|
@@ -49,7 +48,7 @@ MengTo说，在iOS和Android设计中，每次新建图层，第一个就是禁�
 								 使用无填充有Border的圆形,或者进一步将其Convert to Outlines【待】将无填充有Border的圆环Convert to Outlines后，是几条路径？2条吗？或曰有几个锚点？
 								 使用Combined Shape(但貌似会有Bug)
 								 【待】Combined Shape都有哪些bug?(当有三个及以上子路径时)什么才是3个及以上子路径的正确使用方式？
-
+                                 
 
 
 
