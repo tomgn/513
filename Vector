@@ -1,0 +1,59 @@
+[置顶]
+
+
+
+
+
+----------------------------
+Question|
+---------
+注:本小节内容均不投影到Question中，这只是在ofis无法用Sketch的权宜之计，待回家各个击破，直接作为内容进行补充。
+
+----------------------------
+Index|
+------
+1.Set Style as Default
+
+----------------------------
+Content|
+--------
+【问】Sketch能否像Photoshop那样，使用钢笔工具时，当禁用填充和描边后，仍能显示出轮廓？
+    如果不行，那么像MengTo一样，将Border的Thickness设置为小于1的值(比如0.2px)是非常必要的。
+【问】Open / Close Path:
+    如果我绘制闭合路径，是否这个按钮就没用了？
+    如果绘制非闭合路径，这个按钮有何意义？
+    闭合路径的填充和描边闭合吗？(应该是闭合的)
+    非闭合路径的填充和描边闭合吗？(区分Open/Cloth Path情况)
+
+【问】新建锚点:对于一个闭合路径，是否只能在对像图层本身上新建锚点，除非利用删除锚点或剪刀工具将其弄成非闭合路径才能在其之外新建锚点？
+			对于一个非闭合路径，应该可以在对象图层本身，或者对象图层之外新建锚点。
+													在对象图层之外新建锚点，想要从哪个锚点引出，就先点击欲引出的那个锚点，然后新建的锚点就会跟这个欲引出的锚点建立连接了。
+
+1.Set Style as Default
+MengTo说，在iOS和Android设计中，每次新建图层，第一个就是禁用描边，(然后设置填充色)。
+/*Every time, you most likely have to disable the default border style and change the Fill color.*/
+/*It’s pretty rare that borders come into play when designing user interfaces for iOS or Android.*/
+为了提高效率，set an example style and go to Edit -> Set Style as Default.
+【待】这个Edit -> Set Style as Default是否是把当前对象图层的Layer Style设为默认的？
+【待】如果当前对象图层是以下类型的：Shape,Image,Text,Symbol，那么其Layer Style被Set Style as Default后如果新建其它类型的对象图层会有何不同？
+
+2.Flatten
+【待】Flatten能做什么？
+   貌似针对对象图层执行Flatten后，其图层样式会被去掉，也可以将Combined Shape弄成单个，类似Photoshop中的合并形状组件。
+/*When you Flatten a shape, it will no longer hold those properties, or have a combination of multiple shapes.*/
+
+3.Convert to Outlines
+针对Border，可以弄出挖空的形状来。比如圆环。
+
+视图:到目前为止，制作圆环有以下方法:MengTo的钢笔工具暴力作图(用好锚点的调节手柄)
+								 使用无填充有Border的圆形,或者进一步将其Convert to Outlines【待】将无填充有Border的圆环Convert to Outlines后，是几条路径？2条吗？或曰有几个锚点？
+								 使用Combined Shape(但貌似会有Bug)
+								 【待】Combined Shape都有哪些bug?(当有三个及以上子路径时)什么才是3个及以上子路径的正确使用方式？
+
+
+
+
+
+
+
+
