@@ -2414,8 +2414,7 @@ Just keep in mind that using the screen color picker to pick colors from various
 所以设计师们又回到了1x resolusion进行设计，这样当向2x,3x转时，尺寸不会出现小数位数。
 =>按照(iOS逻辑分辨率)从1倍图着手进行设计。（这样转换为2x,3x时尺寸不会出现小数位数，符合pixel perfect理念）
 
-MengTo说:For iOS, I recommend designing at 1x with the iPhone 6 (375 x 667 pt), since that is currently by far the most popular resolution.  <---选择当前最新的iPhone非Plus机型
-		 it’s between the 5 (320 x 568) and the 6 Plus (414 x 736), which will allow us to transition to either of them easily. 			 <---无论是向Plus机型还是向老机型，分辨率介于两者之间。
+MengTo说:For iOS, I recommend designing at 1x with the iPhone 6 (375 x 667 pt), since that is currently by far the most popular resolution.
 我觉得，可能是因为他文章没更新，并且他配的动画截图看到他的Artboard只有iPhone6的尺寸没出现iPhone7的，现在17年5月应该用IPhone7的了。
 
 
