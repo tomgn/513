@@ -30,9 +30,6 @@ Question|
 
 
 【p43-问1】如果日光从正侧面照在被照物体上(即Negative Sunlight和Positive SunLight的临界点)，算是什么光？其Light Source/Light V.P. 及 Shadow Origin是怎样的？
-【p43-问1+】正侧面的日光，Shadow Origin还在HL上吗？
-     	  十分接近正午的日光，Shadow Origin还在HL上吗？
-     	  是否日光的Shadow Origin，不一定在HL上？
 【p43-问2】图2.123和图2.124,是人造光还是日光？
 --------------------------
 顶层视图|
@@ -54,9 +51,6 @@ shadow影子的分类:
       [答1]仍待解决。
       	   我觉得真实情况的临界点，就是正午，或者就是非洲赤道上，太阳在头顶上，垂直照射下来。
            除此之外，其实只要不是正午的太阳，任意时段的太阳都可以有Negative SunLight和Positive SunLight两种状态，这仅仅取决于人作为观察者在太阳和被照物体的相对位置。
-     【p43-问1+】正侧面的日光，Shadow Origin还在HL上吗？
-     		   十分接近正午的日光，Shadow Origin还在HL上吗？
-     		   是否日光的Shadow Origin，不一定在HL上？
 
 其中情况1.1和情况2.1刚好是个反的，区分度明显，参见p37-图2.77,图2.78
 情况1.2和情况2.2，尤其是当人造光源很远其Shadow Origin位于HL上时，基本很难分辨是人造光源还是日光，但是我觉得，如果人造光源都远到这个程度了，还能给距离这么远的物体留下投影，基本不可能，所以99%就是日光了。
@@ -377,10 +371,8 @@ shadow origin(p31-1):配合p31-图2.44理解。
    																当此光源的(在Ground Plane上的)Shadow Origin不在HL上时，必然是人造光源。
    								 如果光源位于距观察者比被照物体"更近"处，或曰被照物体正面受光，投影落在距离观察者更远处。通过观察Light Direction/Light Ray汇聚的点的位置，和Shadow Direction汇聚的点的位置，可以判断出是日光还是人造光。
    								 eg.p37-图2.77,图2.78
-[答3]
-   尝试四:对被照物体和投影进行逆向分析，画出其L.D.以及S.D.，并看L.D.汇聚在哪里，S.D.汇聚在哪里。
-          然后配合光源的4种情况进行筛查。
-          eg.p43-图2.123,p44-图2.130,图2.131
+
+
 
 
 Light Direction(p32-1):通常最具代表意义的是从光源向物体的Upper Corner/Upper Point发射的Light Direction.
