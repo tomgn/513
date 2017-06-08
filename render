@@ -1,0 +1,451 @@
+---------
+前言|
+----
+本书分为两部分，
+前部分(第2章)讲述light[光]和shadow[影]的原理，
+(第2章)你可以学到how to constructs shadow in perspective
+(第3章,第4章,第5章)可以学到如何给surface[面]和volume[体]增加value光影
+
+//第6章很短，打酱油的
+
+后部分(第7章)讲述reflectivity(反光)原理  <----感觉作者是这样分的:光影[光,影]，反光
+//第8章和第9章很短，打酱油的
+(第10章)你可以学到如何render各种material材质
+
+
+本文Render侧重理论，并不特指具体的软件使用。
+Render比drawing from imagination简单，因为我们可以观察自然以学习光、影、反光是如何表现的。
+
+--------------------------
+Question|
+---------
+【问】shadow中，是否cast shadow和shading分别指不同类型的影？
+【待/答1】将<How to Render_Youtube>的Post,Shadow Vanishing Point与<How to Render>的Shadow origin进行整合。
+【问/答1/答2】如何判断一幅画中的光源是人造光还是日光。
+
+【p39-问1】图2.93中，作者如何过H点做Gronud Plane的垂线与Ground Plane相交于F点的？这个F点怎么确定出来的？作者没说，这估计是<How to Draw>中尚未解决的问题。
+【p41-问1】图2.110中，作者如何过H点做Gronud Plane的垂线与Ground Plane相交于F点的？这个F点怎么确定出来的？作者没说，这估计是<How to Draw>中尚未解决的问题。
+【p42-问1】图2.120中，作者如何过B点做Ground Plane的垂线与Ground Plane相交于B1点的？
+【p46-问1】图2.137中，作者如何过D,E,F,G,H,J点做Ground Plane的垂线与Ground Plane相交于点D1,E1,F1,G1,H1,J1的？
+
+
+【p43-问1】如果日光从正侧面照在被照物体上(即Negative Sunlight和Positive SunLight的临界点)，算是什么光？其Light Source/Light V.P. 及 Shadow Origin是怎样的？
+【p43-问1+】正侧面的日光，Shadow Origin还在HL上吗？
+     	  十分接近正午的日光，Shadow Origin还在HL上吗？
+     	  是否日光的Shadow Origin，不一定在HL上？
+【p43-问2】图2.123和图2.124,是人造光还是日光？
+--------------------------
+顶层视图|
+-------
+shadow影子的分类:
+	cast shadow投影:投影有两种边缘，柔化边缘和硬化边缘，形成那种边缘的投影取决于光线的方向，是直射光还是漫射光。
+				   就是"投影"
+	occlusion(p23-1),就是"阴影"，两个相邻面，其中一个面遮挡了另一个面的光从而在另一个面上留下的阴影。(其实也是一种投影吧)
+
+
+光照的四种情况视图:
+我觉得，光照，一共就分四种情况：
+人造光源：人造光源距离观察者比被照物体更近，被照物体正面受光，投影落在距观察者更远处。 <---情况1.1
+        人造光源距离观察者比被照物体更远，被照物体背面受光，投影落在距观察者更近处。  <---情况1.2
+
+日光：Negative Sunlight，日光照射被照物体正面，投影落在距观察者更远处。          <---情况2.1
+     Positive Sunlight，日光照射被照物体背面，投影落在距观察者更近处。  		<---情况2.2
+     【p43-问1】如果日光从正侧面照在被照物体上(即Negative Sunlight和Positive SunLight的临界点)，算是什么光？其Light Source/Light V.P. 及 Shadow Origin是怎样的？
+      [答1]仍待解决。
+      	   我觉得真实情况的临界点，就是正午，或者就是非洲赤道上，太阳在头顶上，垂直照射下来。
+           除此之外，其实只要不是正午的太阳，任意时段的太阳都可以有Negative SunLight和Positive SunLight两种状态，这仅仅取决于人作为观察者在太阳和被照物体的相对位置。
+     【p43-问1+】正侧面的日光，Shadow Origin还在HL上吗？
+     		   十分接近正午的日光，Shadow Origin还在HL上吗？
+     		   是否日光的Shadow Origin，不一定在HL上？
+
+其中情况1.1和情况2.1刚好是个反的，区分度明显，参见p37-图2.77,图2.78
+情况1.2和情况2.2，尤其是当人造光源很远其Shadow Origin位于HL上时，基本很难分辨是人造光源还是日光，但是我觉得，如果人造光源都远到这个程度了，还能给距离这么远的物体留下投影，基本不可能，所以99%就是日光了。
+【p43-问2】图2.123和图2.124,是人造光还是日光？
+
+
+
+
+
+构造投影的关键，在于得知光照是四种情况中的哪一种，然后确定出Light Source(日光之Positive Sunlight时或人造光源时)或Light V.P.(日光之Negative Sunlight时)
+												  Shadow Origin(日光时只有一个位于HL上的,
+												  				人造光多level时会有与level数量相等的一个或多个Shadow Origin,每个level面对应的Shadow Origin可精确作图确定，see)
+当Light Source(或Light V.P.)及Shadow Origin确定后，任一Stick顶端的Light Direction(L.D.)和Stick底端的Shadow Direction(S.D.)就能通过作图完成，从而得到该Stick的投影。
+
+至于作图法，在于不断在被照亮物体上选取不同的点做对应level的Stick并做出该Stick在对应level面上的投影，然后通过观察及作图，基本就能确定出整个被照亮物体的投影轮廓。
+				   a)Stick的创建:在构造投影作图中，通常过某点(通常是被照亮物体上的某点)A做垂直于level面的直线交level面于一点B，则AB通常被称为一个Stick。
+					 这个过程涉及到需要能够过空间一点(通常是被照物体上的一点)，做对应level水平面(比如Ground Plane)的垂线并交level面于一个确定点。
+					 			当有立方体参考时(比如该点直接就位于立方体的某一垂面上)，好做(直接做垂线交立方体底边则得到投影点)
+					 			eg.p39-图2.98之D点的D1点
+					 			eg.p41-图2.110之G点的J点
+					 			eg.p42-图2.115之C点的C1点
+								eg.p42-图2.120之A的A1点,C的C1点
+								eg.p46-图2.137之K点的K1点等。
+
+					 			当该点在空间中三不沾时，虽然这貌似是<How to Draw>中仍未解决但作者任性作图的问题，比如p39-问1，p41-问1，p42-问1，都涉及到了这个问题。但是貌似这是作者通过任性作图就这么能做出来的。
+				     			eg.p39-图2.93之H在Ground Plane上的投影F点
+				     			eg.p41-图2.110之H在Ground Plane上的投影F点
+				     			eg.p42-图2.120之B在Ground Plane上的投影B1点
+				     			eg.p46-图2.137之D,E,F,G,H,J点在Ground Plane上的投影点D1,E1,F1,G1,H1,J1点
+				   b)Stick的投影尝试:一个Stick做出来后，马上根据已知的Light Source(或Light V.P.)及Shadow Origin就能做出此Stick在对应Level面上的投影。
+					 Light Direction(L.D.)光线方向从Light Source(或Light V.P.)发出，照射在Stick的顶端
+					 Shadow Direction(S.D.)投影方向从Shadow Origin发出，照射在Stick的底端
+					 一个Stick的L.D.与S.D.的交点为其投影的末端。
+
+				   c)不断重复a,b步骤，将被照亮物体在不同level面上的stick的投影都作图出来
+					 eg.p42-图2.120，
+					 eg.p46-图2.138
+				   d)然后通过观察，将投影的末端进行连接
+					 eg.p39-图2.96to图2.100,  
+				   	 eg.p42-图2.121,图2.122,
+				   	 eg.p46-图2.139
+ 					 同时观察作图(将投影末端连线与遮挡物的交线取点进行观察作图)，基本就能做出被照亮物体在(遮挡物上)的投影。
+ 					 eg.p46-图2.139to2.141
+
+			      
+eg.p41
+eg.p42-图2.115to图2.118
+eg.p42图2.119to图2.122
+eg.p46-图2.136to图2.141
+
+
+
+
+--------------------------
+Index|
+------
+第2章-Light types and casting shadows
+	1.光影总说
+	2.light和shadow的分类
+		2.1)to2.4)总结
+		2.1)直射光与硬化边缘的影子(投影)
+		2.1+)Multiple light source(多个直射光源)的情况
+		2.2)漫射光/柔光与柔化边缘的影子(投影)
+		2.3)Shadow edges(p86-2内容)
+		2.4)perspective foreshortening(观察者角度[自译])
+	3.光衰
+	4.Occlusion(阴影)[自译]
+	5.edge lighting/rim lighting(p24-1)
+	6.Reflected Light(反光)
+	7.打光术语(Key Light,Fill Light,Rim Light)
+	8.Atmosphere Perspective(近实远虚效应)
+	9.CAST SHADOW相关
+	10.SunLight Shadow Construction
+
+-----------------------------------------------------------------------
+第2章-Light types and casting shadows|
+-------------------------------------
+本节先对light[光]和shadow[影]进行大量举例
+再讲述如何构造cast shadow[投影]
+
+
+1.光影总说
+
+color(p13-1):颜色
+value[光影] assignments(p17-2):赋予光影
+rendering forms(p19-5):渲染形体
+
+=><How to Draw>画出来的只是一种line drawing，没有color[颜色]和value[光影].
+
+surface(p13-2):面
+volumn(p17-4):形体
+a volumn that has variation to its surface(p18-1):形体变化
+form changes(p19-2):形体变化
+change in form(p19-4):形体的变化
+changes in value(p18-2):光影的变化
+value changes(p19-3,p21-3):光影(发生)变化
+
+=>我们是给surface[面]和volumn[体]加上value[光影]，通过光影的变化，人脑就会register它们的形体变化，就像黑白照片那样，这是一个客观事实。
+
+2.light和shadow的分类
+当我们讨论different type of light，其实我们也是在说different type of shadow.
+=>什么样的光，就会得到什么样的影。
+【注】这里并没有按照漫反射那样分，比如我说平行光线遇到表面粗糙的物体会发生漫反射。好像跟这个不是一路的，也对，这个是漫反射，是反射，是reflectivity，跟光和影是并列的概念。
+
+cast shadow(s)(p17-1):投影
+			   sp30-1,
+core shadow(p30-2)
+
+2.1)to2.4)总结:
+投影边缘是硬化还是柔化，要看三个参数:光源,远近,观察者角度
+
+2.1)直射光与硬化边缘的影子(投影)
+direct light(p20-1):直射光
+                    一束或若干束照射方向相同的光线。                    
+light coming from an indoor artificial source(p20-7):来自室内的人工光源
+light bulb(p20-9):灯泡
+sunlight(p20-8):日光
+=>直射光可以来自室内的人工光源(灯泡)(无灯罩)，也可以来自日光。
+
+shadow with a hard edge(p20-2):影子具有轮廓鲜明的硬化边缘
+hard-edged shadow(p20-5):硬化边缘的影子
+hard-edged cast shadow(p20-6):硬化边缘的投影
+cast shadow...hard-edged(p24-3)
+=>凡是直射光(比如室内射灯或日光)照在物体上，物体就会投射出硬化边缘的投影。
+see"p24-问1"
+
+2.1+)Multiple light source(多个直射光源)的情况
+看起来，多个投影相交的地方更深。
+实际上：p25-A:未相交的投影区域其实反而被别的光源照亮了。
+	   p25-B:多个投影相交的区域深度不变。
+【p25-问1】在p25-图2.26中，如果只有光源a，那么其形成的投影AC的明暗程度由什么决定？
+seealso "Light Source(sp34-5)"
+
+2.2)漫射光/柔光与柔化边缘的影子(投影)
+diffuse light(p20-3,p21-2):漫射光
+soft light(p21-1):柔光
+=>漫射光与柔光是等价的，是若干束照射方向不同的光线，就像阴天(太阳光被云挡住)的光线。
+
+light bulb diffused by a lampshade(p21-5):灯泡被罩上灯罩，有灯罩的灯。
+the sun on an overcast day(p21-6):阴天的太阳，阴天。
+=>漫射光/柔光可以来自有灯罩的灯，也可以来自阴天的日光。
+
+
+shadow with a soft edge(p20-4):影子具有柔化边缘
+cast shadows have soft edges(p21-4):投影具有柔化边缘
+cast shadow...soft-edged(p24-4)
+=>凡是漫射光/柔光照在物体上，物体就会投射出柔化边缘的投影。
+see"p24-问1"
+
+【p24-问1】图2.25中，太阳光线被山遮住后，在建筑上的cast shadow投影是硬化边缘的，而在山(hill)上的投影是柔化边缘的？
+【答】见2.3)(p86-2内容)，投影是柔滑边缘还是硬化边缘，除了跟光源是直射光还是漫射光有关以外，还跟投影距离object的距离有关，投影上的点离object对应点越远越柔化模糊越近越硬化清晰。
+
+2.3)Shadow edges(p86-2内容)
+对于2.1)本身，或者对于2.2)本身，还有另外一个参数决定了影子边缘是柔化还是硬化，这个参数就是投影距离object的远近。
+投影(上的点)距离object(上对应点)越远，投影边缘越柔化模糊；
+投影(上的点)距离onject(上对应点)越近，投影边缘越硬化清晰；
+eg.p86-图3.163所示，凳子腿处的投影到凳子顶处的投影由硬化边缘逐渐过渡到柔化边缘。
+
+2.4)perspective foreshortening(观察者角度[自译])
+p86-1)作者说其实还有一个参数，就是对于两张不同透视程度(perspective foreshortening)的图而言，越斜着看影子越crisp清晰硬化，越正着看投影越soft柔化模糊。
+   //参照p86-1文字体会"斜着看"，"正着看"的含义。
+
+3.光衰
+light decay/light’s falloff(p22-1):光衰
+								 =>是否就是"亮部"和"暗部"，或者明暗交界
+
+
+4.Occlusion(阴影)[自译]
+occlusion(p23-1):是一种shadow effect.
+				 我觉得，就是一种"阴影"，发生在两个临近的surface，其中一个挡住了另一个的光线，从而在另一个surface上留下阴影。
+				 教材例子就是p23-图2.21，图2.22，中的屋顶拐角处。
+				 很容易被没经验的设计师忽略。
+
+5.
+Edge Light/Rim Light
+edge lighting/rim lighting(p24-1):侧光，边缘光。
+								  这是处理object的silhouette轮廓时的一种技法，避免outlining(p24-2)用(一条)线勾这个轮廓，从而显得很卡通缺乏真实感。
+								  而是应该add侧光。
+								  =>我觉得，"高光"，就是出现在这个位置。
+								  此时光源来自于object的后面(from behind)或者一侧(beside).
+seealso"7.打光术语"
+
+shading(p17-3):描影法
+
+【问】shadow中，是否cast shadow和shading分别指不同类型的影？
+
+6.Reflected Light(反光)(p26-1):亦可称为Bounced Light(反射光)，Fill Light(次要光线)(p26-2)。
+
+seealso"7.打光术语"
+
+7.打光术语(Key Light,Fill Light,Rim Light)
+另:提到Fill Light(次要光线)，这里再补充介绍一下打光术语。
+Key Light(主要光线):场景中的主要光源，如果是室外，可能是日光或月光。
+								  如果是室内，可能是天花板大灯，或窗外的光线。
+				   画面中物体的主要的颜色，亮度，影子方向，都直接与Key Light有关。
+
+Fill Light(次要光线)(p26-2):<How to Draw>说Reflected Light(反光)是一种Fill Light.
+					用于把画面全黑的部分填入一点光线，因为如果画面中有一块区域全是相近的亮度(太亮白成一片或太暗黑成一片)，会难以分辨且缺乏立体感。
+					Fill Light看情形，有可能不只一个。
+
+Fill Light的产生情况:a)在3D渲染软件中，给场景添加(1个或多个)自定义的次要光源，打在物体上，形成Fill Light.
+					 eg.犀牛建模的右下,后下,左下,正下
+				   b)Reflected Light(反光)也可以形成Fill Light.(所以教材p26-2认为反光也是一种Fill Light)
+					 比如场景的光源打在了其它物体上的反光(有时这个反光的source可以出现在画布上，有时不会出现在画布上)照在了被照物体上形成。
+					 eg.地面的反光照在了物体的底部区域。
+					 eg.<How to Render>p26-图2.28,图2.29,图2.30,图2.31
+					 注:反光的source(the source of the reflected light)(p26-3):具有反光的地面，具有反光的洞穴侧面，具有反光的椅子脚，具有反光的墙壁。
+
+
+
+Rim Light(sf24-1):教材又称Edge Light,网上也称Back Light.
+				  是另一种常见的打光手法，它利用光线由物体的后侧方来强调出物体的轮廓，并不见得适用于每个镜头，但却是一种很好用的小技巧。
+
+
+8.Atmosphere Perspective (effect)(p28-1):近实远虚效应。
+								越远的越虚，虚表现在:对比度降低(less Value Contrast),即light value(亮调子)和dark value(暗调子)变化不明显。//我觉得技术上，是不是可以弄个渐变模糊的叠加图层。
+												  饱和度降低(less Color Saturation)。 //我觉得技术上，就在PS中调整Saturation就可以了。
+
+								产生原因:越远的物体，越会受到更多的atmosphere(大气层)中的moisture(水分),dust(灰尘),smog(烟雾)的遮挡。
+								影响程度:往HL方向越远的物体，比向天空上看越远的物体，更加具有远虚效应。
+									    海浪大的场景比海浪小的场景，更加具有远虚效应。
+									    大雾场景比晴天场景，更加具有远虚效应。
+
+9.CAST SHADOW相关
+light Value(p28-2):亮调子
+dark value(p28-3):暗调子。
+Local light:人造光
+Sunlight:日光
+
+Light Source(光源):位于画布中Shadow Origin的正上方(或正下方)。
+			   人造光情况下，就是光源，光线射出的源头，人造光也没有什么Light V.P./Auxiliary V.P.，因为人造光并不是平行的，而是四向发散的。
+
+			   日光情况下,Auxiliary与Light Source太阳位置是否一致的分析:
+			   sp34-5)日光的情况，日光的光线都是平行光线，Light Ray汇聚于一个Auxiliary Vanishing Point(辅助消失点)。
+					  此辅助消失点可以位于太阳的Shadow Origin的正上方或正下方(directly above or below)。
+					  这个辅助消失点可能是太阳所在位置，也可能不是，教材p34-5)中说此点是太阳所在位置，是错误的，仅仅适用于Positive Sunlight的情况。
+			   sp34-10)Positive Sunlight:p34-图2.63,太阳在画布中的物体后方，物体被从背后照亮(backlit).
+										 p34-图2.65，此时可认为辅助消失点的位置就是太阳所在位置。
+			   sp34-11)Negative Sunlight:p34-图2.64,太阳在画布中物体的前方，物体被从正面照亮(front-lit).
+										 p35-图2.66，此时辅助消失点位置并非太阳所在位置。
+										 p37-图2.77
+			   在日光情况下，不论日光是Positive Sunlight还是Negative Sunlight,Auxiliary Vanishing Point和Shadow Origin都是位于同一垂线的。
+
+
+			   Light V.P.与Shadow Origin不出现在画布的情况:
+			   sp34-9)大多数情况下，日光的Light Source(严格说来应该是指Light V.P.)并不出现在画布上。
+			   sp35-图2.67)图示。
+
+seealso "Multiple light source(sp25)"
+
+
+Auxiliary Vanishing Point(p34-4):辅助消失点，也可称为Light V.P.(p35-1)，今后还是叫Light V.P.更好。
+								 日光的(Parallel )Light Direction平行光线在透视角度中汇聚的点。
+				    seealsop34-5)至于辅助消失点是否就是太阳所在位置，要分两种情况。
+					seealsop34-10)Positive Sunlight时，是的。
+				    seealsop34-11)Negative Sunlight时，不是。
+				    //总之，对于日光这种平行光，才会引入Auxiliary V.P./Light V.P.对于人造光，没有这个概念，因为人造光是四向发散的。
+
+Light V.P.(p35-1):其实就是教材中提到的Auxiliary Vanishi Point(p34-4).
+				  我觉得Light V.P.比Auxiliary V.P.好，用来形容平行光线的消失点比辅助消失点更贴切。
+				  //总之，对于日光这种平行光，才会引入Auxiliary V.P./Light V.P.对于人造光，没有这个概念，因为人造光是四向发散的。
+
+
+
+shadow origin(p31-1):配合p31-图2.44理解。
+			  a1)位置-人造光源:
+			  sp32-3):人造光源时，通常位于光源正下方(underneath/below the light source)的某个高度的点(视投影所在level水平面不同而不同)。
+					  Shadow origin向着Light Direction所在垂直面(称为Light Plane)发射的叫做Shadow Direction.
+			  sp33-1,33-3):当投影在Ground Plane时，对应的Shadow Origin就是过光源的垂线与Ground Plane的交点。youtube网友称为"Post"。
+			  sp33-4,33-5):当投影在其它level(水平面)(p33-5)上时，对应的Shadow Origin就在过光源的垂线与该水平面的交点。
+						   sp38-图2.85to图2.88)介绍了得到立方体顶面这个level的Shadow Origin作图法。<---干货。
+						   sp38-图2.89to图2.90)其中图2.89我的注解做出了两个level对应的Shadow Origin，剩下的投影作法作图即可。
+
+			  a2)位置-日光:
+			  sp34-3)日光的Shadow Origin,是位于HL上的某一点。
+			         日光情况下，Shadow Direction汇聚于HL上的某一点。
+			  这个Shadow Origin可以位于太阳的正下方，也可以不是。当Positive Sunlight时，我认为此点位于画布中太阳的正下方。
+			  											   当Negative Sunlight时，我认为此点并非位于画布中太阳的正下方。eg.p37-图2.77
+
+			  b)与人造光的光源/日光的Light V.P.的位置关系
+			  在日光情况下，不论日光是Positive Sunlight还是Negative Sunlight,Auxiliary Vanishing Point/Light V.P.和Shadow Origin都是位于同一垂线的。
+			  在人造光情况下，没有Auxiliary V.P./Light V.P.的概念，Shadow Origin与光源(Light Source)是位于同一垂线的。
+
+			  c)是否出现在画布:
+			  c1)不出现在画布的情况
+			  sp34-8)大多数情况下，日光的Shadow Origin都不会出现在画布上(要么画布上不出现HL，要么画布上即使出现HL日光的Shadow Origin也在画布左/右边界之外)
+			  sp35-图2.67),图2.69
+			  sp37-图2.77
+			  c2)出现在画布的情况
+			  sp34-图2.65,图2.66
+
+			  d)Shadow Origin的个数:
+			  d1)人造光源情况下:sp33-5)有几个level(水平面)，就会有几个shadow origin.
+			  d2)日光情况下:sp35-2)不论有多少Level,都只有一个Shadow Origin,位于HL上的某点。
+    							  因为所有投影都是平行的，其方向都汇聚于此(消失)点.
+    					  sp35-图2.69),sp38-图2.81to图2.84,sp38-图2.91
+
+		
+
+【待】将<How to Render_Youtube>的Post,Shadow Vanishing Point与<How to Render>的Shadow origin进行整合。
+[答1]我觉得，<How to Render_youtube>中的Post,是指较近人造光源的Shadow Origin,此点不在HL上，与被照物体很近。
+		   <How to Render_youtube>中的Shadow Vanishing Point,应该是就是日光,因为貌似不同level的投影都指向这一个(消失)点。
+
+【问】如何判断一幅画中的光源是人造光还是日光。
+[答1]利用排除法：
+   尝试一:从不同Level是否共用同一个Shadow Origin来看，若一幅图有多个Level时作者画了多个Shadow Origin，则是人造光源，若一幅有多个Level的图作者只画了一个Shadow Origin，则是日光光源。
+         当然如果画布中只有一种level(Ground Plane)，那也就只有一个Shadow Origin。
+   尝试一+):我觉得，即使当只有一个Shadow Origin时，若该Shadow Origin落在HL上，基本就是日光之Positive Sunlight，因为这么远的距离如果还是人造光，基本不会给如此远的物体留下投影的。
+
+
+   尝试二:从Light Ray/Light Direction是否汇聚于Shadow Origin的(正)下方来看，若一幅图具有此特性，则汇聚点是Light V.P./Auxiliary V.P.，则是日光之Negative Sunlight光源。
+         当然如果画布中的光线汇聚于Shadow Origin的(正)上方，那可能是人造光源，也可能是日光之Positive Sunlight光源。
+   注:尝试二其实也就是看投影在物体后方(更加远离观察者)的图，其光线是汇聚于物体后方某点(日光之Negative Sunlight)，还是从物体前方(更加靠近观察者的)(人造光)射出，来快速判断光源是日光还是人造光。
+
+【答2】
+   尝试三:靠谱，推荐。但是貌似仍解决不了【p43-问2】的问题，所以应该还需要某个补丁。
+   		 从"光照的四种情况视图"来看，如果光源位于距观察者比被照物体更远处，当此光源的Shadow Origin在HL上时，基本就是日光了(因为这么远距离人造光基本是不可能给物体留下投影的)
+   																当此光源的(在Ground Plane上的)Shadow Origin不在HL上时，必然是人造光源。
+   								 如果光源位于距观察者比被照物体"更近"处，或曰被照物体正面受光，投影落在距离观察者更远处。通过观察Light Direction/Light Ray汇聚的点的位置，和Shadow Direction汇聚的点的位置，可以判断出是日光还是人造光。
+   								 eg.p37-图2.77,图2.78
+[答3]
+   尝试四:对被照物体和投影进行逆向分析，画出其L.D.以及S.D.，并看L.D.汇聚在哪里，S.D.汇聚在哪里。
+          然后配合光源的4种情况进行筛查。
+          eg.p43-图2.123,p44-图2.130,图2.131
+
+
+Light Direction(p32-1):通常最具代表意义的是从光源向物体的Upper Corner/Upper Point发射的Light Direction.
+
+                       人造光情况下，Light Direction是从Light Source(光源)发出的，代表某条光线的方向。
+				sp34)日光情况下，Positive Sunlight的情况时，Light Direction是从Light Source(光源)(太阳)发出的(同时也是从Auxiliary Vanishing Point发出的,两者位置一样)，太阳在物体后方，物体背面照亮。
+					   	       Negative SunLight的情况时，Light Direction是从Auxiliary Vanishing Point/Light V.P.发出的，此辅助消失点并非太阳所在位置。
+			    p32-7):又称为Light Ray.
+				sp41-1)又简写为L.D.
+
+Shadow Direction(p32-2):从Shadow origin发出的，代表投影的方向。
+				 sp32-6，41-2):简写为S.D.
+
+
+				 
+
+Light Plane(p32-4):Light Direction和Shadow Direction所在的面，称为Light Plane.
+				   与Ground Plane垂直。
+				   Light Plane通常不会画出来，但是应该心中有数。
+
+stick(p32-5):在透视画法中，通常把line segment(线段)俗称为stick(棍棒,枝条).
+			 在构造投影作图中，通常过某点A做垂直于level面的直线交level面于一点B，则AB通常被称为一个Stick。
+			 做出Stick后，再根据已知的Light Source(或Light V.P.)及Shadow Origin作图得到此Stick在对应Level上的投影。
+			 做出一个个尝试Stick在对应level上的投影后，基本就能确定出整个投影轮廓。
+
+
+10.SunLight Shadow Construction
+sp34-1)日光情况下，Light Direction是平行的，Shadow Direction也是平行的，但是平行线从透视角度看，是要相交于消失点(sp34-2)的。
+sp34-3)日光情况下，Shadow Direction汇聚于HL上的某一点，此点位于画布角度中太阳的正下方，是太阳的Shadow Origin.
+
+【p39-问1】图2.93中，作者如何过H点做Gronud Plane的垂线与Ground Plane相交于F点的？这个F点怎么确定出来的？作者没说，这估计是<How to Draw>中尚未解决的问题。
+【p41-问1】图2.110中，作者如何过H点做Gronud Plane的垂线与Ground Plane相交于F点的？这个F点怎么确定出来的？作者没说，这估计是<How to Draw>中尚未解决的问题。
+【p42-问1】图2.120中，作者如何过B点做Ground Plane的垂线与Ground Plane相交于B1点的？
+【p46-问1】图2.137中，作者如何过D,E,F,G,H,J点做Ground Plane的垂线与Ground Plane相交于点D1,E1,F1,G1,H1,J1的？
+//其实就是作者暴力作图，就做出来了，宣布这是既成事实，应该就是点面垂线法吧。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
