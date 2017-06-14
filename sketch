@@ -1,0 +1,2042 @@
+[置顶]
+[官方文档]https://www.sketchapp.com/learn/documentation/
+
+[置顶]
+/**
+当前mbp的Sketch版本:Version 3.8.3 (29802)
+
+[43.2仍不起作用]Alpha mask貌似不起作用。
+[43.2仍无]我的机子的Sketch(Insert->)Symbol的层级菜单底部并没有Organize Symbols...
+**/
+
+------------------------------------------------------------
+顶层视图|
+--------
+1.Sketch的对象(或曰图层layer)类型，可共用的抽象类型
+//以下内容仅在此处定义并更新。
+Sketch可插入的对象(或曰图层layer)从分类上说，有4种，Shape，Image，Text，Symbol
+它们可以共用的抽象，有3类，Shared Layer Style，Shared Text Style，Symbol
+如下所示:
+
+Shape:Vector,Pencil,Shape(8种)	<---可使用Shared Layer Style
+Image 							<---可使用Shared Layer Style
+Text 							<---可使用Shared Text Style
+Symbol 							<---可利用Symbol master,Symbol instance
+
+2.Sketch的对象(或曰图层layer)类型，对应的Layer Style值
+//以下内容见"七.Styling-Layer Style - 1.4)Layer Style的对象及Layer Style值"，本处仅引用，应在正文更新。
+
+Vector,Pencil,Shape,Text的Layer Style是完整的5个:Fill,Border,Shadow,Inner...,Gussian...      see "一.界面构成 - 2.6)[全局]Layer Styles(图层样式)"
+Image的Layer Style除了完整的5个，还多了一个Color Adjust. 	see "一.界面构成 - 2.6+)[特定]Image Layer的Layer Style之Color Adjust"
+Symbol和Group只有一个Shadow
+
+3.同一Page一般放相同分辨率的Artboard,比如一个命名为iOS的Page，放的都是iPhone7分辨率的Artboard.
+  不同Page各自存放不同分辨率，比如命名为iOS,Android,Web,Apple Watch的Page.
+
+------------------------------------------------------------
+FAQ|
+----
+【待/答】Distribute Horizontally,Distribute Vertically啥意思。
+
+【待】shared layer style和shared text style.
+	shared text style有点像Photoshop的共享文字属性(忘了叫啥名字)
+【待】2.4-b)Text Fields(文字属性)的:Alignment(4个状态，待，貌似只是影响自身)，Width(Auto,Fixed,待)，Spacing(Charactor,Line,Paragraph，待)
+【待】Zoom Blur和background blur啥意思。
+【问】线性渐变是怎么玩的，感觉还会显示下方的填充色啊？
+
+【问/答】Multiple page在实际项目中，是做什么用的？(经测验，一个Page，可以含有多个Artboard。)
+【问/答】个人感觉，Symbol instance的override就是针对Text和Image的。那这样一来岂不是Shared Text Style就没用了？
+
+【待】哪些东西适合用Symbol，哪些东西适合用编组(配合内容生成插件)？
+【问】既然Symbol已经可以作为智能对象，全局调用了(比如Sketch的ios template就有用Symbol的大量控件)，这个Shared Layer Style是不是就没那么重要了？
+【待】如何制作4边不同颜色的空心十字？
+【问】感觉旋转中心点没有吸附功能啊？吸附不到Grids上啊？
+【待】Spacing(Charactor[感觉是Leading字距调整],Line[感觉是行距],Paragraph[未知]，待)
+【问】Sketch的ios ui的template中，(Insert->)Symbol->Bottom Bar->Tab Bar，发现底部的5个方框不是图片类型的，但是overides是可以替换为图片的，这是什么类型的？或者说是如何实现的？
+【待】对于smart resizing，尚需进行测试分析。
+【待】File › New From Template › iOS UI Design 观察一下各个控件的实现及resizing情况。
+
+【待】Layer->Flatten selection to bitmap有什么实际作用？
+
+【待】Scissors工具删除锚点之间的边后，形状是否闭合？
+【待】Scissors工具在MengTo圆变半圆的例子中，貌似也能删除锚点。
+
+【问】Open Path/Close Path按钮？我难道不能在添加锚点时点击第一个锚点创建闭合路径么？
+
+【待/答】Alpha mask貌似不起作用。	
+【问/答】HSB颜色模式的颜色值为何要用Hex或RGB来表示？它们是什么关系？
+【待/答】我的机子的Sketch(Insert->)Symbol的层级菜单底部并没有Organize Symbols...		
+
+【问】在Sketch43.2中，怎么ios ui template中的Shared Text Style不在Inspector的对应弹出菜单显示呢？自定义的Shared Text Style貌似一旦加"/"号，也不会在Inspector的对应弹出菜单中显示？
+
+【待/答】我也不知道此Show Grid按钮是否对应View Pixel Grid
+【待/答】Regular Grid的设置
+【待】Layout Grid的设置
+
+【待】现在已知Shape Editing的Round下拉菜单只影响调整锚点的手柄点位置，并且官方文档说设为Half Pixels或Full Pixels可以保证shape’s edges are consistent，这是什么意思？
+     这个作用到底是什么？
+
+【问】Sketch Mirror能否在笔记本,电脑上通过wifi连接使用浏览器预览，应该也可以吧？
+【待】连接3:貌似有文章说可以不仅用局限于局域网wifi(Make Sketch’s ‘local sharing’ work anywhere:https://medium.com/sketch-app-sources/make-sketch-s-local-sharing-work-anywhere-4d6d2fd0016d)
+	   	    		 但此文章发布于老旧Sketch版本，所以尚不知到最新版Sketch是否也能突破wifi限制。
+【待】Sketch->Preferences->General标签项-Artboard Export的设置待把玩。
+【待】Sketch->Preferences->General标签项-Sketch Mirror 待把玩
+
+
+
+【待】但是在实际输出测试中，当我使用Export Presets之Android时，给我输出的却是:文件夹名称/文件名.png，并不是给文件名加前缀，而是把文件放在了前缀为名称的文件夹中了。
+【待/答】Auto Save说明文档看不出啥意思，怎么获取之前版本。
+【待】有人Auto Save勾选后，Sketch就会很占容量，在哪里删除这些临时文件？
+
+【问】所以说，弄UI时，到底将文字转不转曲？
+【问】是转曲操作本身会卡，还是转曲后显示会卡？
+
+【问】对于十六.Pixel Precision/Pixel Perfect理念 - 3,4,5的方法，一个Shape上的各个锚点的位置，是否也会自动为整数？从而不用像Photoshop专题8那样进行锚点微调？
+
+
+【问】同一个颜色，如果想转换到另一个色域，怎么转？
+【问】为何Preview要按照sRGB色域来显示？不是说按照图片本身的色域类型来弄么？
+【问】又说最终要按照显示器的色域来展现，那么是否对于浏览器，甚至任何软件，最终都得转换为显示器的色域来显示出来？
+
+【问】这个Auto Save相关的文件夹在什么路径？
+------------------------------------------------------------
+Sketch特性|
+----------
+以下均为相对Photoshop的优势：
+1)Sketch是矢量的
+2)鼠标在Layer List上移过时，移到对应图层时会在画布中显示出图层的外边框。
+	  在Layer List上点击某个图层时，该图层在画布中也会进入选中状态。<--只不过通常得先cmd+1，将画布全局预览一下，这样方便看到是哪个图层被选中。
+	  在Layer List上点击某个图层时，配合cmd+2，可直接在画布中跳转到此图层并放大。<----神级杀器，Photoshop无此功能。
+
+  鼠标在画布中点击不在任何编组中的元素时，Layer List会相应选中并跳转(这个好)到高亮当前元素对应的图层。<---这个Photoshop有Auto-Select打勾。
+               但是对于在Group编组内部的图层，会被所在编组挡住，所以需要层层双击才能跳转，此时按住cmd可实现Layer List中一次高亮跳转。<---这点虽没Photoshop的Auto-Select方便，但是有用。
+3)Symbol  <---对应Photoshop的智能对象
+4)Shape的Shared Layer Style。
+5)Text Layer的Shared Text Style <---这个对应Photoshop中的Character Style和Paragraph Style.
+6)mask<---这个相当于photoshop的基层base,只不过这个基层base在Sketch中可以把位于同一编组的上方图层都自动弄成剪贴蒙版状态
+7.1)Combined Shape<---这个对应Photoshop中复杂形状图层，并完美解决了复杂形状图层中子形状的复制粘贴
+7.2)Flatten       <---对应Photoshop的合并形状组件，完美解决了复杂形状图层中，(所有布尔+状态的)子形状的独立性
+8)重叠图层的选择(两种方法)	 //这个特性逆天(虽不常用,但能看出Sketch的细节很到位)
+9)//三.2				     //这个特性逆天，从未在Photoshop中使用过，可能Photoshop中也没有锚点层面的对齐
+锚点调整:同时选中两个及以上锚点时，可进行6种align对齐操作。
+		同时选中三个及以上锚点时，可以进行2种distribute(距离等分[自译])操作。(当然此时也可进行6种alien对齐操作)。
+10)按住cmd，可在两个锚点连线的正中间位置添加锚点。[推荐]
+11)Scissor剪刀工具，可剪断两个锚点间的线。
+12)Layer Style之Border，除了有常规的Flat Color，还有Linear Gradient(线性渐变),Radial Gradient(径向渐变),Angular Gradient(角度渐变)
+13)图层的图层样式随图层等比例缩放:选中图层(或Artboard)，然后cmd+k(或者Edit->Scale...)
+
+以下均为相对于Photoshop的劣势
+[废弃]没有图层蒙版，只是基于基层base的剪贴蒙版，也就是说，没有办法像Photoshop一样在蒙版上用柔性画笔涂涂抹抹。
+     经测试，Alpha Mode就是图层蒙版。
+
+------------------------------------------------------------
+Index|
+------
+一.界面构成
+	1)上方Toolbar
+	2)右边Inspector
+	3)左边Layer List
+二.广义Layer的操作
+	0.Layer的分类[待不断完善]
+	1.adding layer
+	2.selecting layer
+	3.复制粘贴图层及编组
+	4.图层的对齐
+	5.1)图层的resize
+	5.2)图层的图层样式随图层等比例缩放[精华]
+
+三.Shape
+	1.布尔操作及flatten及Scissors
+	2.Editing shapes(形状图层的编辑)
+	3.Rotating,Transform,Rotate Copies
+	4.Spliting
+
+四.Text
+	1.粘贴
+	2.调整大小
+	3.Text Inspector
+	4.Text Styles
+	5.文字路径(Text On Path)
+	6.文字转形状
+
+五.Image
+	1.任意(单个/多个)图层转bitmap
+	2.压缩图片类图层
+	3.替换图片
+	4.编辑Image Layer
+	5.Image Layer的Layer Style之颜色调整
+
+六.Symbol
+	1.Symbol操作
+	1+)非Nested Symbol的Common example
+	2.Nested Symbol(嵌套Symbol)
+	2+)Nested Overrides的Common example
+	3.1)Resizing Symbol
+	3.2)Resizing Group
+	3.1+)Smart Resizing Symbol的Common example
+	3.2+)Smart Resizing Group的Common example
+	4.Symbol管理
+
+七.Styling-Layer Style
+	1)more global知识
+		1.1)快速调整Opacity
+		1.2)拾色器面板(color picker)
+		1.3)渐变(Gradient)
+	2~6)5种Layer Style介绍
+		2)Fills(填充)
+		3)Borders(描边)
+		4)Shadow
+		5)Inner Shadow
+		6)Blurs(模糊)
+
+七+)Shared Layer Style
+
+八.Group 
+九.Artboard 
+十.Page 
+十一.Canvas(画布)
+	1.Sketch的画布具有无限尺寸
+	2.放置元素
+	3.画布拖动与缩放
+	4.两种View(Vector View,Pixel View)
+	5.Show Pixel Grid
+	6.Grids(网格)
+		6.1)Regular Grid
+		6.2)Layout Grid
+		6.3)Make Grid(其实是一种复制粘贴)
+	7.Ruller(标尺)
+	8.Guides(参考线)
+	9.Smart Guides(智能参考线)
+十二.Exporting(导出)
+	1.1)可导出的对象
+	1.2)导出命名
+	2)"导出标记"
+	3)导出方法
+		3.1)常规导出
+		3.2)Code导出[略]
+	4)导出设置(Export Setting)
+	5)Sharing
+	6)Exportable Layers or Slices
+	7)Export Preset
+十二+.Slice
+	1)创建
+	2)Slice的3个选项勾
+十三.Preferences
+	0.未包含在Preferences中的设置[略]
+	1.General标签项
+	2.Canvas标签项
+	3.Layers标签项
+	4.Plugins标签项
+	5.(Export) Presets标签项
+	6.(Sketch )Cloud (Beta)
+十四.Sketch Mirror			
+十五.Other(其它)
+	1.Template
+	2.Presentation Mode
+	3.Importing
+	4.Performance
+	5.Color Management
+		5.1)Colors in General
+		5.2)Colors in Sketch
+十六.Pixel Precision/Pixel Perfect理念
+	1.Designing in 1x as a base
+	2.Show Pixels与Show Pixel Grid
+	3.Inspector的Position(X,Y)和Size(Width,Height) 
+	4.Round to Nearest Pixel edge
+	5.Pixel Fitting
+	6.Shape Editing的Round下拉菜单
+二十.待分类
+2.Toolbar的customize及快捷键
+3.属性参数的输入
+二十一.快捷方式
+二十二.技术支持
+二十三.优先设置
+------------------------------------------------------------
+Content|
+--------
+一.界面构成
+[已阅]https://www.sketchapp.com/learn/documentation/the-interface/
+
+1)上方Toolbar:含有所有的tools和action.
+2)右边Inspector:相当于属性面板，可以动态显示所选中的layr(s)的属性，并可在其中进行调整。
+								 显示所选中的tool的option(alt)，并可在其中进行调整。
+3)左边Layer List:列出当前doc的所有Artboard和Layer.
+			  	   MengTo称之为Navigator.
+
+
+===
+1)上方Toolbar
+a)没必要的
+Zoom:没必要，完全可以通过两指在触控板上进行缩放。
+	  同时配合cmd+1全局预览，cmd+0一比一预览。
+Edit:编辑。
+	 没必要，完全可通过双击图层进入此模式。
+Scale:缩放。
+	  没必要，完全可以在图层对应的Inspector中调整尺寸，并且由于Sketch支持+,-,*,/的数字公式输入，所以放大100%可以写为原尺寸*2.
+
+Union:布尔加。没必要，在Layer List的Combined Shape中的子路径右边可选择布尔状态。
+Subract:布尔减。没必要，在Layer List的Combined Shape中的子路径右边可选择布尔状态。
+Intersect:布尔交。没必要，在Layer List的Combined Shape中的子路径右边可选择布尔状态。
+Difference:布尔排除。没必要，在Layer List的Combined Shape中的子路径右边可选择布尔状态。
+
+Forward:貌似没啥大用。
+Backward:貌似没啥大用。
+
+Insert的子集快捷按钮:Vector,Pencil,Shape(Line,Arrow,Rectangle,Oval,Rounded,Star,Ploygon,Tirangle),Text,Image,Artboard,Slice.
+			   	   按照自己的习惯来选择添加为刚需toolbar按钮。
+
+Group,Ungroup:没必要，完全可以通过cmd+G，shift+cmd+G来使用快捷键操作。
+Combine:没必要，就是把子路径弄成Combined Shape，完全可以在Layer List里将一个形状图层拖动到另一个形状图层上，则会自动生成Combined Shape.
+
+Tools:跟Insert一样，是一个菜单。鉴于其中的按钮有的是刚需，有的没必要，且均在Toolbar的定制界面中均有出现，所以此Tools按钮不再需要。
+	  包含Edit,Transform,Scissors,Flatten;
+	  	 Rotate,Rotate Copies;
+	  	 Mask,Scale;
+	  	 Outlines.
+
+Show Rulers:标尺开关[不推荐，占地方]
+			View->Canvas->Show Rulers[不推荐]
+    		ctrl+R[不推荐]
+    	建议:平时就默认打开吧。	  
+
+Slice:重复了，在Insert中就有。并且通过"S"这个快捷键来创建更方便。 
+
+
+
+b)刚需的
+Insert:除了不能新建只能调用Symbol和Styled Text，可以新建Sketch所需的其它所有图层元素。
+Create Symbol:刚需。虽然可通过Layer->Create Symbol[不推荐]来弄，不过直接点击Toolbar中的按钮显然更方便。
+
+Transform:扭曲。
+		  并不是缩放。
+Rotate:旋转。
+Flatten:合并形状组件。
+Scissors:剪刀工具，用于删除两个锚点之间的边。
+	     虽然可通过Layer->Paths->Scissors，但是还是用Toolbar的Scissors按钮方便。
+
+Mask:蒙版(使该图层变为基层base并将其上方图层都自动弄成剪贴蒙版状态)。
+	 虽然可用ctrl+cmd+M快捷键创建，但是不想记这个快捷键。
+
+Show Pixels:切换画布的Vector View和Pixel View.
+			虽然有快捷键ctrl+P[推荐]，和View->Canvas->Show Pixels[不推荐]，但还是直接按按钮爽。
+
+Show Grid:Regular Grid开关。
+		  View->Canvas->Show Grid[不推荐]
+          ctrl+G[推荐]			<---虽推荐，但是还是记得麻烦，不如直接按按钮爽。
+          Toolbar的Show Grid按钮[推荐]
+
+Show Layout:Layout Grid开关。
+ 			View->Canvas->Show Layout[不推荐]
+			ctrl+L[推荐]			<---虽推荐，但是还是记得麻烦，不如直接按按钮爽。
+			Toolbar的Show Layout按钮[推荐]       
+
+Make Grid:可将单个对象复制出指定行数,列数,行距,列间距的一个table状。
+		  也可通过Arrange->Make Grid...操作[不推荐]
+
+Round To Pixel:可将对象图层的Position(x,y)和Size(Width,Height)的数值整数化。
+			   虽然也可以Layer->Round to Nearest Pixel Edge[不推荐]
+
+Outlines:选中文字图层后点击此按钮，可以将文字转曲。<---影响性能。
+		 (经测试，甚至可以选中Shape图层后点击Outlines按钮,不过感觉没什么大用)
+		 另外还可以选中文字图层后，鼠标右键叫出菜单，Convert to Outlines[不推荐]
+			 				   Layer->Convert to Outlines
+			 				   shift+cmd+O[不推荐]
+
+Export:导出。[推荐]
+	   也可通过File->Export...叫出。[不推荐]
+	   
+
+Mirror: see "十四.Sketch Mirror"
+
+(Sketch )Cloud (Beta):see "十三.Preferences - 6.(Sketch )Cloud (Beta)"
+
+另:画布View Pixel Grid:ctrl+X[推荐]
+				      虽然View->Canvas->Show Pixel Grid[不推荐]
+				      注:无对应Toolbar按钮
+
+===
+
+2)右边Inspector:
+Sketch中没有任何floating panel(浮动面板)，Inspector会动态地显示所选中的Layer(s)的属性。
+而Photoshop需要手动地勾选需要显示的窗口，手动地取消勾选需要隐藏的窗口，想整洁就费时，想省时界面就显得冗余。
+
+
+分为以下几个section(部分):
+2.1)[全局]Alignment Options(对齐图标)，位于顶部。
+[已阅]https://www.sketchapp.com/learn/documentation/layer-basics/moving-layers/
+	  这个区域平时是灰色未激活状态。当选中两个及以上layer图层时，变为激活状态。
+	  经观察，有8个图标，分别是前两个:Distribute操作(也可在Arrange->Distribute Objects中操作,不过没这里方便)
+	  							 Distribute Horizontally,Distribute Vertically.
+	  							 /*The first two are for distributing layers horizontally  and vertically . You can also choose Arrange › Distribute Objects or use these shortcuts; Control-Command-V or Control-Command-H. If you want to distribute the layers with fixed spacing then you can use the Make Grid tool. These options also take the pixel fitting preference into account to help you to be as precise as possible.*/
+	  							 用法见"Distribute Horizontally,Distribute Vertically啥意思"，适用于图层及锚点。
+
+	  					   后六个:对齐操作(也可在Arrange->Align Objects中操作,不过没这里方便)
+	  					   		 Align Left(左对齐),Align Horizontally(水平居中),Align Right(右对齐),Align Top(上对齐),Align Vertically(垂直居中),Align Bottom(下对齐).
+	  					   		 经测试:Page中若无Artboard,则任何Page中的编组或图层单独选中时，后六个对齐图标都不会亮。
+	  					   		 	   Page中的Artboard中的编组或(编组中的)元素单独选中时，后六个对齐图标会亮，此时是基于本编组或元素对于所在Artboard进行对齐。
+	  					   		 	   无论是否在Artboard中，当同时选中多个图层，多个编组，多个图层及编组时，后六个对齐图标会亮，此时所有选中的图层及编组将视为一个整体，左右上下对齐以整体的最左右上下端为准，水平居中和垂直居中以整体的水平中线和垂直中线为准。
+	  					   		 	   [推荐]但是我们通常想基于某个给定图层(此图层位置补办)，然后别的图层基于此固定图层进行6种对齐，这时只要将不想变的图层锁定，然后同时ctrl选中相关图层，在进行六种对齐图标的操作即可。
+	  					   		 经测试，对锚点，也同样适用。			   		 	   
+
+
+【待】Distribute Horizontally,Distribute Vertically啥意思。
+     https://www.sketchapp.com/learn/documentation/layer-basics/moving-layers/
+     中提到貌似跟 Make Grid和pixel fitting 有关。
+【答】在锚点调整中，同时选中三个及以上锚点时，可以进行2种distribute(距离等分[自译])操作。(当然此时也可进行6种alien对齐操作)。
+    在图层调整中，同时选中三个及以上图层时，可进行2种distribute(距离等分[自译])操作。(当然此时也可进行6种alien对齐操作)。
+    具体用法自己实操体会一下，就是等分横坐标，等分纵坐标。
+    
+
+2.2)[全局]定位大小旋转图标组。
+		   经观察，有三组图标，分别是：Position(x坐标,y坐标)，Size(Width宽度,Height高度),Transform(Rotate旋转,Flip翻转)
+		   
+		   注:Rotate也可以通过点击Toolbar的Rotate按钮进行操作。
+
+2.3)[全局]不透明度叠加模式图标组。
+		   经观察，有两个图标，分别是：Opacity(%),Blending(Normal;
+		   											  Darken,Multiply,Color Burn;
+		   											  Lighten,Screen,Color Dodge;
+		   											  Overlay,Soft Light,Hard Light;
+		   											  Difference,Exclusion;
+		   											  Hue,Saturation,Color,Luminosity)
+2.4-a)[特定]Layer Properties(图层属性):仅当选中图层时显示。
+2.4-b)[特定]Text Inspector(文字属性):仅当选中Text Layer时显示。
+								有Typeface(即font-family)，
+								  Weight(字重:如regular,thin,light,bold,italic等)，
+								  Options:常规，单下划线，双下划线，删除线
+								  		  常规，回车变数字列表，回车变原点列表
+								  Color(字体颜色),//注:还可以给Text Layer添加Fill Style如颜色渐变.
+								  (font-)Size，
+								  Alignment(4个状态，待，貌似只是影响自身)，
+								  Width(Auto,Fixed):此指文字所在的Text Box的宽度是否是回车换行或者是固定长度换行。see 四.2.调整大小
+								  【待】Spacing(Charactor[感觉是Leading字距调整],Line[感觉是行距],Paragraph[未知]，待)
+
+		注:文字的大小只能通过Inspector中的2.4-b)文字属性区域中的Size调整大小，而通过2.2)[全局]定位大小旋转图标组中的Size调整的大小是text box(文字选框)的大小。
+
+2.5-a)[特定]Shared Layer Style下拉列表:仅当选中Shape时在Inspector中显示。     默认No Shared Style.
+
+									 貌似这个Photoshop没有对应的功能，只能在Photoshop的图层面板中，按住alt然后鼠标左键按住并拖动样式到欲添加相同图层样式的图层上松开鼠标左键，这样完成图层样式的复制粘贴，缺点是一次操作只能复制粘贴一次图层样式，无法批量赋予图层样式。
+【问】既然Symbol已经可以作为智能对象，全局调用了(比如Sketch的ios template就有用Symbol的大量控件)，这个Shared Layer Style是不是就没那么重要了？
+适用对象:Vector,Pencil,Shape(的6种形状)，甚至Image，都可以使用Shared Layer Style.
+创建:选中Shape时在Inspector中的“No Shared Style”弹出窗口中，点击"Create New Shared Style"，输入名称即可。 <---仅有的创建入口
+编辑,同步:如果想编辑某个Shared Layer Style,可通过编辑/改动任何一个级联其的(Shape) Layer实例的Layer Style后，点击Inspector中对应此Shared Style右边出现的刷新图标即可。
+		 我将点击刷新图标的操作称为同步[自译]。
+撤销编辑:在修改了某个Shared Layer Style实例的Layer Style且尚未同步时，如果想撤销此(Shape) Layer的修改返回原Shared Layer Style状态，只需按住alt/opt按钮点击Inspector中对应此Shared Style右边出现的返回图标即可。
+																								  						或者再次重新选择此Shared Layer Style
+调用:对于已存在的(Shape) Layer,通过其Inspector的[特定]Shared Layer Style下拉列表，来选择所需的样式。
+	注:不能像Symbol和Shared Text那样直接插入，这是因为Vector,Pencil,Shape(6种形状)，甚至Image，都可以调用Shared Layer Style.系统没办法知道你要直接插入的具有特定的Shared Layer Style的对象是这9种里的哪一种，所以不能直接插入。
+
+
+
+管理列表&重命名&删除:Layer Styles列表管理窗口，
+				  在Inspector中点击Organize Shared Styles. <---仅有的叫出入口
+
+				  该窗口可以进行重命名和删除操作。
+				  删除:选中某个Shared Layer Style,点击"-"号。
+				  重命名:双击某个Shared Layer Style，可重命名。
+				  		注:没有跟Symbol和Shared Text Style一样的那种使用"/"进行层级分组的用法。
+
+
+
+2.5-b)[特定]Shared Text Style下拉列表: 仅当选中Text Layer时在Inspector中显示。默认No Text Style.
+范围:Shared Text Style的作用范围，仅在同一个Sketch文档的所有Page和Artboard中可共享，但是不能跨不同的Sketch文件共享。
+    //Text Styles exist on a per-document basis.
+创建:创建Shared Text Style的入口在Inspector中的Create New Text Style下拉菜单项中创建。[推荐]
+	也可选中Text Layer后在Layer->Create Shared Style创建。[不推荐]
+	注:Toolbar的Styled Text按钮中没有创建动作。
+编辑,同步:如果想编辑某个Shared Text Style,可通过编辑任何一个级联其的Text Layer实例后，点击Inspector中对应此Shared Style右边出现的刷新图标即可。
+    	 我将点击刷新图标的操作称为同步[自译]。
+撤销编辑:在修改了某个Shared Text Style实例的Text Style且尚未同步时，如果想撤销此Text Layer的修改返回原Shared Text Style状态，只需按住alt/opt按钮点击Inspector中对应此Shared Style右边出现的返回图标即可。
+
+调用:方法一[尽量少用]:对于已存在的Text Layer，通过其Inspector的[特定]Shared Text Style下拉列表，来选择所需的文字样式。
+		  		   但是貌似现在Sketch43.2不知是bug还是本就这样设计，它并不显示Toolbar中Styled Text中那么多的文字样式。
+				  【问】在Sketch43.2中，怎么ios ui template中的Shared Text Style不在Inspector的对应弹出菜单显示呢？自定义的Shared Text Style貌似一旦加"/"号，也不会在Inspector的对应弹出菜单中显示？
+    方法二:如果想新建一个文字样式，除了方法一，还可以点击Toolbar的Styled Text按钮选择相关文字样式后，在画布中点击插入。
+    	  由于Toolbar的Styled Text按钮中会完全显示所有Styled Text，故建议使用此法。
+
+管理列表&重命名&删除:Styled Text列表管理窗口，
+				  除了在Inspector中点击Organize Text Styles，也可由Toolbar的(Insert->)Styled Text按钮点击Organize Text Styles叫出。
+
+				  该窗口可以进行重命名和删除操作。
+				  删除:选中某个Shared Text Style,点击"-"号。
+				  重命名:双击某个Shared Text Style，可重命名。
+				  		跟Symbol一样，可通过使用"/"对Shared Styled Text的命名来实现(Insert->)Styled Text层级菜单分组。
+				  		eg.一个命名为a/1/p和一个命名为a/1/q的两个Styled Text，在(Insert->)Styled Text层级菜单中位于a/1组。
+   /*
+   Text Layer在Inspector中出现的Shared Text Style下拉列表的内容，跟Toolbar的Styled Text按钮点击后出现的下拉列表的内容一模一样，并且都有Organize Text Styles.
+   但是Inspector中这个下拉列表比Toolbar的Styled Text按钮的下拉列表多出一个Create New Text Style。
+   可见，创建Shared Text Style的入口在这里。
+   */
+
+
+注:这个相当于Photoshop的Character Style(字符样式)和Paragraph Style(段落样式)，详见webui2,webui3
+
+
+2.6)[全局]Layer Styles(图层样式):  Fills(填充)：选项1-6种填充方:式<---有6种填充方式(我称为6种Styling子项)
+											 Flat Color(填充单色)， 																			<---单色填充
+											 Linear Gradient(线性渐变)，Radial Gradient(径向渐变)，Angular Gradient(角度渐变)， 					<---渐变填充
+											 Pattern Fill(图案叠加)：选项1-图案:除了系统预设的几个图案，还可以点击Choose Image...按钮添加自定义图案。 	<---图案填充
+											 					    选项2-叠加方式:Fill(单个图案总是占满图层区域),Fit(单个图案经常留白图层区域),Stretch(单个图案拉伸长宽至图层尺寸),Tile(平铺图案)
+											 Noise Fill(添加杂色)：这里不再详尽介绍，随用随调试之。 												<---杂色填充
+
+											 选项2-图层模式:Normal;
+											 			  Darken,Multiply,Color Burn;
+											 			  Lighten,Screen,Color Dodge;
+											 			  Overlay,Soft Light,Hard Light;
+											 			  Difference,Exclusion;
+											 			  Hue,Saturation,Color,Luminosity.
+
+
+								 Borders(描边):选项1-4种描边方式:Flat Color(填充单色), 														 	<---单色描边
+								 							  Linear Gradient(线性渐变),Radial Gradient(径向渐变),Angular Gradient(角度渐变) 	<---渐变描边
+
+
+								 			  选项2-位置:Center(居中描边)，Outside(外描边)，Inside(内描边)
+
+
+								 Shadows(投影):		  Color(投影颜色)，x(投影x坐标)，y(投影y坐标)，Blur(投影大小)，Spread(投影扩展)
+								 Inner Shadows(内阴影):Color(阴影颜色)，x(投影x坐标)，y(投影y坐标)，Blur(投影大小)，Spread(投影扩展)
+								 
+								 模糊:有4种模糊
+								 	 Gaussian Blur(高斯模糊)[向所有方向模糊]，Motion Blur(动感模糊)[向一条直线上两个方向进行模糊]{0度和180度等价，n度和n+180度等价}，
+								 	 Zoom Blur(径向模糊)[从某一点向外模糊]，
+								 	 Background Blur(背景模糊):此种模糊会将本使用了Background Blur对象图层的下方的一个或多个图层(如Text Layer,Image Layer)进行模糊，为了能够观察到下方图层，本图层的Opacity应低于100%。
+								 	 						  参数:Amount:此水平滑块可调整模糊的程度。
+								 	 						  配合:本图层的Opacity应低于100%，或者本图层的叠加方式选择Soft Light或Overlay
+								 	 						 eg.ios毛玻璃效果。
+								 	 						 eg.MengTo的Home页底部Dock。 将Rectangle形状放在大Dock编组最底部(编组中包含各种UI元素的子编组)，对此Retangle形状使用Background Blur,配合Soft Light叠加方式。
+	   a)对Styling子项的操作有:
+	   添加：可通过+号，添加位于同一Sectino的多种Layer Style子项.
+	   		同一出现位置及相同大小的Style会上层覆盖下层。
+	   删除：取消勾选状态时，会出现垃圾桶图标，此时可删除取消勾选的一个或多个图层样式。
+	   		也可直接将图层样式拖动出所在的Section区域进行删除(同时会显示一个气泡消失动画)。
+	   		也可ctrl+鼠标左击
+	   隐藏/显示:每个Styling子项都有对勾，取消对勾则会隐藏对应Styling.
+				Fills的全部子项批量显示/隐藏，有个快捷的方法就是点击F键。
+
+	   b)复制粘贴整个Layer Style到另一个Layer:选中需要复制其Style的图层：Edit->Copy Style 或alt/opt+cmd+C
+	   								 	   再选中需要粘贴Style的图层：Edit->Paste Style 或alt/opt+cmd+V
+
+
+2.6+)[特定]Image Layer的Layer Style之Color Adjust:除了2.6)中包含的Fills,Broders,Shadows,Inner Shadows,模糊之外，还多一个Color Adjust.
+												 可调整Hue色相，Saturation饱和度，Brightness明度，Contrast对比度。
+		   				 
+
+
+2.7)[全局]Exporting(导出):
+可以导出任意Layer或group.
+see "十二.Exporting(导出)"
+
+2.8)[特定]Inspector之Image Edit Mode:仅当双击Image Layer时显示
+									双击后在对应的Inspector中出现两组图标：
+									Selection(矩形选框),Magic Wand(魔棒选择)。<---按住shift选区叠加，按住alt/opt减去选区
+									Invert Selection(反选选区)，Crop(裁剪选区)，Fill Selection(填充选区)，Vectorize Selection(将选区填充上填充色后生成为一份Shape)。
+
+
+
+===
+3)左边Layer List
+此间介绍Layer List中显示的元素
+
+3.1)Page:一个Page的子元素，只可能是Artboard，或者游离于Artboard之外的Layer(Shape或Text Layer)，
+										 或者游离于Artboard之外的Layer的编组Group，
+										 或者游离于Artboard之外的Combined Shape(复杂形状图层)
+										 或者游离于Artboard之外的Symbol.
+	 多个Page之间可以拖动Artboad,Layer等。当按住option(alt)进行拖动时，则是将当前Page中的元素复制一份到被拖入的Page中。
+	 【问】Multiple page在实际项目中，是做什么用的？(经测验，一个Page，可以含有多个Artboard。)
+	 【答】根据官方文档https://www.sketchapp.com/learn/documentation/grouping/pages/
+	  	  Page的好处在于:
+	  	  好处1:比如使用Symbol,默认会将Symbol master发送到Symbol Page中进行管理和编辑，这样整个文档所有Symbol就有一个统一管理的位置。
+	  	  好处2:执行效率上，若整个Sketch文档只有一个Page，那么所有Artboard都得显示在一个画布中，对内存的占用很大，而使用多个Page，画布一次就不用显示所有Artboard，提高了performance.
+	  	  	    see "十五.Other(其它) - 4.Performance"
+	  	  好处3:设计理念上，一个Page放mobile design的，一个Page放Web Design的，一个Page放自己尝试的，总是好的。
+
+		 MengTo说，同一Page下的Artboard一般用来放同一分辨率的不同screen页面，比如一个Page中放的都是尺寸为iPhone7的Artboard.
+		  		   不同Page一般用来放不同分辨率的(Artboard)页面，比如iOS用一个Page,Android用一个Page,Web用一个Page,Apple Watch用一个Page等。
+
+
+3.2)Artboard:Artboard无法与任何并列层级关系的其它元素(比如位于同一Page下的其它Artboard,Layer,Combined Shape,Group)进行编组。
+		     Artboard无法包含在另一个Artboard中。
+
+		     /*MengTo说，同一Page下的Artboard一般用来放同一分辨率的不同screen页面，比如一个Page中放的都是尺寸为iPhone7的Artboard.*/
+
+3.3)Layer的状态
+
+3.3.1)Mask:
+https://www.sketchapp.com/learn/documentation/shapes/masking/
+
+任何Shape都可以通过ctrl+cmd+M变为mask，此时应该将此图层放在底层作为基层base，然后上方的所有形状图层就自动变成了(基于此基层的)剪贴蒙版状态。
+注:Sketch中的mask其实相当于Photoshop中的基层base,只不过这个基层base是可以自动将所有位于其上的图层都变为剪贴蒙版状态。
+
+约束:
+	方法一:编组:为了避免作为mask的基层上方不需要变为剪贴蒙版状态的图层都变成剪贴蒙版状态，可通过编组(将基层和需要的剪贴蒙版状态的图层编为一个编组)进行隔离。
+编组外的上方图层不会受到编组内的作为mask的基层影响而变为剪贴蒙版状态。
+	[不推荐]方法二:如果不想使用编组的方法，还有一个方法，就是选中已作为但不想作为剪贴蒙版的图层，然后Layer->ignore underlying mask(打勾)
+		  		 不建议用此法，还是建议通过编组进行蒙版的约束隔离。
+		  		 注:ignore underlying mask无对应快捷键
+
+操作:将欲作为基层base的图层执行:ctrl+cmd+M
+							[推荐]在Toolbar中，点击Mask图标
+							[不推荐]Layer->Use as Mask
+	再次执行同样操作可取消对应图层的mask状态.
+
+
+快捷操作:同时选中1个图片图层和1个形状图层(不必考虑上下图层关系，很智能)，Layer->mask with selected shape.此时Sketch会自动将这两个图层创建一个编组，并将形状图层作为基层base，图片图层作为剪贴蒙版状态。
+		如果用常规操作，需要，把形状图层执行ctrl+cmd+M，放在图片图层之下，然后共同编组。
+		所以还是Layer->mask with selected shape效率更高一些，节省了两个图层相对位置的调整，以及新建编组文件夹两个步骤。
+		注:mask with selected shape无对应快捷键
+//其实快捷操作没必要
+
+注:使用蒙版时，Layer List中的图层状态可能存在延迟。
+
+Alpha mask:相当于Photoshop中的渐变颜色的模板，越往边缘越具有不透明度。
+【待】Alpha mask貌似不起作用。
+ [答]升级到最新版本43.2，貌似还是不起作用。
+ 【答】在43.2版本中测试发现，默认的Outline Maske是作为基层base的剪贴蒙版使用，此时会显示出基层base的全貌。
+ 						 Alpha Mask是作为图层蒙版使用，此时会隐藏基层base的全貌，只是使用基层base的区域来显示上方图层。
+
+3.3.2)布尔操作
+
+对象:布尔操作的图层必须位于Combined Shape(复杂形状图层)中的非最底层subpath(子路径)，方具有布尔操作的四种状态。
+状态:每个位于同一Combined Shape中的子路径都可选5种布尔状态:None(无),Union(加),Substract(减),Intersect(交),Difference(排除)
+范围:布尔状态图标是本子路径相对于其下方的子路径而言的
+	 位于Combined Shape最底层子路径下方没有任何子路径，故无布尔状态。
+
+布尔状态的切换:[不推荐]可在Toolbar中点击Union(加),Substract(减),Intersect(交),Difference(排除)图标。
+			 [推荐]在Layer List面板，一个Combined Shape中的子形状右边会对应有布尔状态图标，鼠标左击可以切换其布尔状态。
+
+3.3.3)flatten
+对象:仅对包含2个或2个以上子路径的Combined Shape有效。
+操作:将上述的Combined Shape中的子路径尝试合并为一个路径。
+例外:并非所有情况下，都能把subpath合并成一个，此时会报错:
+	Can not flatten shape into a single path
+例外的情况:具有挖空心的形状，执行flatten后，仍然会具有2个子路径，一个outter path,一个inner path.
+
+3.3.4)Scissors
+操作:Toolbar的Scissors按钮
+	[不推荐]Layer->Paths->Scissors。
+剪刀工具，用于删除两个锚点之间的边。
+此工具在某些情况下比删除锚点更加高效，比如MengTo把圆通过Scissors工具弄成半圆的例子，以及MengTo制作音量图标的例子。
+【待】Scissors工具删除锚点之间的边后，形状是否闭合？
+【待】Scissors工具在MengTo圆变半圆的例子中，貌似也能删除锚点。
+注:MengTo用一个例子演示了Scissors工具配合(基于辅助线的)添加锚点工具的神作图。
+注:我觉得，凡是涉及到删除锚点，都可以想一想能否通过Scissors工具来完成。
+
+
+
+3.4)Symbol:
+https://www.sketchapp.com/learn/documentation/symbols/
+有点像Photoshop中可复用的智能对象，一处编辑，处处生效。
+Symbol master:我称之为Symbol master真身。 
+			  是一个无法放入任何Artboard的一种特殊Artboard,其文字是粉色。
+
+Symbol Page:创建(非Artboard的)Symbol master时，如果将弹出对话框的"send symbol to symbol's page"打钩，系统会将Symbol master真身放进一个系统生成的Symbol Page中。
+Symbol instance:我称之为Symbol实例
+Nested Symbol(嵌套Symbol):see "六.3"
+
+对象:							  <---本段仅讨论创建非Nested Symbol的情况。
+	经测验，可对单个Layer,单个Combined Shape,单个Group,
+    以及上述元素的任意组合，均可创建Symbol.<----太强大了有木有
+    甚至可以对单个Artboard创建Symbol.<---不过貌似没有这么用的，以下内容均为创建非Artboard的Symbol
+范围:一个Sketch文档中的所有Page和Artboard
+
+创建master:选中一个对象(非Artboard)后，点击Toolbar中的Create Symbol按钮[推荐]，或者Layer->Create Symbol[不推荐]
+		  于是在当前Page(的当前Artboard)的当前位置中，所选中的图层变成了一个Symbol实例。
+
+		  创建时，如果将弹出对话框的"send symbol to symbol's page"打钩，系统会生成一个名为Symbol的Page，并在此Symbol Page中生成对应的Symbol master，这个symbol master才是所有实例的真身。
+		  	     如果不打钩，则系统会生成symbol master真身在当前Page中，独立于任何Artboard且无法放入任何Artboard中。
+编辑master:在画布中双击，则可跳转进(入Symbol Page中)对应的Symbol master真身，进行编辑。
+		  也可直接手动(进入Symbol Page中)对相关Symbol master真身进行编辑。
+删除master:若要删除Symbol master真身，双击实例跳转或手动(进入Symbol Page)将相关的Symbol master真身删除即可。
+		  删除后，Symbol列表中便不会显示该Symbol了(删掉了当然不会显示了)。
+
+
+调用master创建instance:Toolbar中的Insert->Symbol或Symbol按钮，点击后出现当前文档的Symbol下拉菜单项，鼠标左击后可以拖动到所需位置。
+
+
+取消某一instance与master的级联(也算是种override了):选中所需symbol instance,右击在弹框中选择detach from symbol[推荐]
+											   或Layer->detach from symbol[不推荐]
+											   于是该symbol instance变成了一个普通编组或图层。
+编辑instance:当双击时，跳转到master中，此时编辑的是master，对master的编辑会即刻对所有instance生效。<--see"编辑master"
+			override:当Symbol中含有(一个或多个)Text或Image时，Inspecoter部分会多出一个Overrides区域，可以将此instance所有Text的内容重写，可以将所有Image替换重写，而不影响对应master.
+【问】个人感觉，Symbol instance的override就是针对Text和Image的。那这样一来岂不是Shared Text Style就没用了？
+【答】不冲突。
+	 因为Symbol对于其中的Text和Image的Override仅局限于内容的替换，但是样式仍旧是Symbol master中的对应样式。
+	 所以Symbol master中的Text可以使用Shared Text Style来规范其字体样式。
+
+seealso "六.Symbol"
+
+
+
+3.5)Shared Styles:
+Shared Style是个统称，实际可细分为:
+3.5.1)Shape的Shared Layer Style
+3.5.2)Text Layer的Shared Text Style.
+
+适用对象:Shape和Text Layer
+在Layer List中的标示:当Shape或Text Layer具有Shared Style时，在Layer List中，Text的"Aa"图标由灰色变粉色(很明显)。Shape的图标由灰色变粉色(看不太明显)。
+
+/*
+see 
+2.5-a)[特定]Shared Layer Style下拉列表:仅当选中Shape时在Inspector中显示。     默认No Shared Style.
+2.5-b)[特定]Shared Text Style下拉列表: 仅当选中Text Layer时在Inspector中显示。默认No Text Style.
+*/
+
+3.6)Layer的过滤
+图层输入框:在Layer List底部，可以通过输入名称进行图层的筛选。
+		 也可通过cmd+F来快捷搜索。
+图层显示/隐藏图标:也可以点击"Show/Hide layers in the list"图标来隐藏图层，以便只显示出Slice(切片)(因为"Show or hide Slices in the list and the document"默认是show状态)。
+																   //This is perfect for when you exclusively want to work with slice layers.
+切片显示/隐藏图标:
+可导出图层(切片)数目:当前Page中的可导出图层及切片的总数目。
+				  //total number of Exportable Layers(including slices) you have on a page.
+				  位于切片显示/隐藏图标右边。
+可导出:[待]https://www.sketchapp.com/learn/documentation/exporting/exporting-layers/
+
+
+
+============================
+二.广义Layer的操作
+[已阅]https://www.sketchapp.com/learn/documentation/layer-basics/
+
+0.Layer的分类[待不断完善]
+这里的Layer,从分类上，泛指一切通过Vector,Pencil,Shape创建的Shape Layer。以及可能的Symbol.
+			  	  		  通过Text创建的Text Layer.
+			  	          通过Imgae创建的Image Layer.
+所以本节的Layer操作，是广义上的操作。			  	          
+
+1.adding layer:
+可以通过Toolbar的Insert按钮，或者Insert->...:添加Vector,Pencil,Shape,Text,Image.
+										  调用Symbol,Styled Text.<---这里仅能调用已经自定义好的，但不能创建。
+另:see "Adding Layer快捷操作"<---很有帮助。
+
+2.selecting layer
+2.1)重叠图层的选择:
+方法一:弹出菜单
+在画布中某图层区域内，鼠标右击，在弹框中选择"Pick Layer"弹出菜单项中，具有所点图层下方的含有所点击部分的所有图层的名称。
+详见文档图"二.Layer-2)重叠图层(Overlapping Layers)的选择-方法一之弹出菜单.jpg"
+[废弃]方法二:按住option/alt,隔山打牛<---但会被编组遮挡,故今后此法废弃,改为二.2.2)的cmd法。
+	  按住option/alt，鼠标在画布上移动时，可以无视上方图层的遮挡，显示鼠标所在位置的下方图层的轮廓，一旦左击则选中下方图层。
+
+2.2)编组内部图层的选择:
+鼠标在画布中点击不在任何编组中的元素时，Layer List会相应选中并跳转(这个好)到高亮当前元素对应的图层。<---这个Photoshop有Auto-Select打勾。
+
+编组内部图层直接选择:
+方法一:但是对于在Group编组内部的图层，会被所在编组挡住，所以需要层层双击才能跳转，此时按住cmd可实现Layer List中一次高亮跳转。<---这点虽没Photoshop的Auto-Select方便，但是有用。
+=>综上，按住cmd，然后鼠标在画布上游移时，可同时在Layer List和画布上高亮所指的图层元素。
+[不推荐]方法二:在Layer List中选中编组，然后在编组对应的Inspector中将"Click-through when selecting"打勾，则对于此编组的直接子级元素(图层或编组)，都可直接选中，不会被本编组挡住非要双击才能选取。
+																							   但是对此编组的子编组中的子元素，还是无法直接选中，除非将子编组的Click-through when selecting也打勾，十分麻烦。 <---弊端1
+	   		 并且，在编组移动上，只能通过方向键最多配合Shift来完成，任何在画布中三指拖动编组区域都会只移动编组的对应直接子元素。	<---弊端2
+	   故不推荐此法。
+
+
+3.复制粘贴图层及编组
+cmd+c,cmd+v:在Layer List面板选中，或在画布中，均可选中待复制的图层或编组，执行cmd+c,cmd+V，此时会在原地生成一份复制的图层或编组。
+cmd+D:在Layer List面板，或在画布中，均可选中待复制的图层或编组，执行cmd+d,此时会在原地生成一份复制的图层或编组。<--相当于Photoshop中在图层面板中ctrl+j一键复制。
+	  另:对Artboard进行cmd+D也会duplicate复制出一个同样尺寸的Artboard.
+
+opt/alt:在画布中，选中待复制的图层或编组，按住opt/alt，三指移动到所需位置，松开三指，松开opt/alt，此时会在新位置生成一份复制的图层或编组。[推荐]
+		当然，也可按住opt/alt在Layer List中三指拖动待复制的图层或编组，松开三指，松开opt/alt.[不推荐]
+		注意:使用opt/alt法时，一定要先松开三指，再松开opt/alt.否则不会复制成功。
+
+4.图层的对齐
+参见:一.2.1)[全局]Alignment Options(对齐图标)
+
+5.1)图层的resize:
+选中图层后，按住cmd，通过方向键可以每次改变1px的尺寸，此时按住shift键再通过方向键每次可改变10px的尺寸。
+5.2)图层的图层样式随图层等比例缩放[精华]
+当resize一个图层时，其stylistic element图层样式并不会随之改动，比如一个5px的描边在一个50x50px的shape时，你将shape resize个3倍成150x150px，但是其描边还是5px。
+为了resize一个图层同时使其图层样式(corner radius, border thickness, shadow size,inner shadow, etc.)也同时等比例改变，只需要:
+选中图层，然后cmd+k(或者Edit->Scale...)
+另:cmd+k对于Artboard同样适用。
+eg.cmd+k的缩放对于将@1x的UI Kits转换为@2x和@3x是非常必要的。
+
+============================
+三.Shape
+https://www.sketchapp.com/learn/documentation/shapes/
+
+【待】如何制作4边不同颜色的空心十字？
+[答]貌似没有现成的(像Illustrator中的强大)工具来弄，那么可能只能通过PS中曾经操作过的锚点微调([专题8]制作矢量图标时要Pixel-Perfect,Crisp)理念来弄。
+    将原Shape复制出5份。
+    对于每份，放大到像素级别，相关的参考线等全开，然后手动添加处于交叉位置的锚点，再手动删除不需要部分的锚点，由此制作出其中一个闭合区域。
+ 
+ 	我觉得，我应该至少把Illustrator的左边工具图标组中的工具(以及路径查找器等)都过一遍，毕竟Illustrator对于形状和路径的很多处理都是极其专业的，比PS和Sketch更强大和便捷。
+
+ 	另:貌似借助Scissors工具也能完成。因为我觉得，凡是涉及到删除锚点，都可以想一想能否通过Scissors工具来完成。
+
+
+
+【问】使用Vector钢笔工具时，当我设置好Grids为(1,10)后，如何让锚点吸附在Grids交线上？
+【问】为何我用Vector钢笔工具围成一个小的10x20px尺寸的形状，放大后，边线都变得大而虚了，难道不是矢量的吗？
+
+
+
+1.布尔操作及flatten及Scissors:
+see 一.3.3.2)布尔操作
+see 一.3.3.3)flatten
+see 一.3.3.4)Scissors
+
+
+2.Editing shapes(形状图层的编辑)
+几个名词:锚点(point),锚点的调节手柄端点(handle control point)[一个锚点在非Straight状态下具有两个调节手柄端点]
+
+进入路径编辑模式:在画布中选中图层，回车。
+			  				 鼠标左键双击。
+			  				 Toolbar中Edit按钮。[不推荐]
+
+/*
+选中锚点:直接点击单个锚点选中
+		按住shift或cmd分别选中多个
+		三指拖动选中多个
+		tab键依次切换锚点
+[待]https://www.sketchapp.com/learn/documentation/shapes/editing/
+   之Multiple Selection中，同时调整多个handle control point的操作，我在mbp的Sketch无法实现，不只是版本问题还是怎么回事。	
+		*/
+
+拖动锚点:直接三指拖动
+添加锚点:直接左击添加。
+		三指滑动可在添加时调整handle.
+        按住cmd，可在两个锚点连线的正中间位置添加锚点。[推荐]
+删除锚点:选中锚点后,delete键之。
+编辑锚点:(handle control points的把玩)
+		选中锚点后，Inspector对应4种锚点类型(point type)中的一种:
+									  Straight(尖):此时锚点无handle(control point)，锚点只是一个尖端，可调整圆角(corners)参数[默认为0]. <---等价于Photoshop的convert point tool(那个尖角工具)点击一下锚点
+									  Mirror:same angle,same distance.
+									  		 锚点具有时刻同向且等长的2个handle control point.	<---等价于Photoshop从锚点拖动出handle
+									  Asymmetric(不对称):same angle,different distance.
+									  					锚点具有时刻同向的2个handle control point.但两边长度靠手动调整。
+									  Disconnected:different angle,different distance.
+									  			   锚点的2个handle control point彼此独立,调整其中一个时，另一个的方向和长度不变。<---等价于Photoshop中仅调整一个handle point
+		注:可通过双击，在Straight和Mirror(状态)间切换锚点类型。
+		注:如果选中一个锚点，没有显示handle，则此锚点处于Straight(状态)，可双击(变为mirror类型)或在Inspector中改变其类型以出现handle.
+		注:Straight(状态)存在的意义,就是可以调整圆角参数，默认为0。
+		   eg.圆角矩形(U)就是一个由4个Straight类型的锚点构成，每个锚点都有圆角参数，当然，其圆角也可以在圆角矩形的Radius中进行调整。
+锚点调整:同时选中两个及以上锚点时，可进行6种align对齐操作。
+		同时选中三个及以上锚点时，可以进行2种distribute(距离等分[自译])操作。(当然此时也可进行6种alien对齐操作)。
+
+Open Path/Close Path按钮:点击可切换。
+						 不论路径是否闭合，填充(色)都是将其视为闭合来填充的。
+					【问】Open Path/Close Path按钮？我难道不能在添加锚点时点击第一个锚点创建闭合路径么？
+
+
+3.Rotating,Transform,Rotate Copies
+3.1)Rotating:旋转
+操作:通常点击Toolbar的Rotate按钮操作。
+ 	 也可以在图层对应的Inspector中的transform之Rotate输入框中精确调整旋转角度。(见一.2.2)[全局]定位大小旋转图标组)
+	 也可以选中图层后，按住cmd，然后拖动聚焦的8个点的任意一个进行旋转。
+注:旋转中心点直接三指拖动其位置，可绕此旋转。
+【问】感觉旋转中心点没有吸附功能啊？吸附不到Grids上啊？
+[答]貌似确实吸附不到。
+
+3.2)Transform:扭曲
+对象:单个或多个图层(注:单个或多个子路径均不可进行扭曲)
+另:按住cmd可对单个点进行扭曲，不过不常用。
+
+3.3)Rotate Copies
+操作:点击Toolbar的Rotate Copies按钮
+    [不推荐]或者Layer->Paths->Rotate Copies
+
+4.Spliting
+对象:仅对Combined Shape有效。
+作用:将Combined Shape的所有子路径恢复为正常独立的Shape.
+操作:选中Combined Shape,Layer->Path->Split
+//Splitting操作没有Toolbar快捷按钮
+
+另:see "十六.Pixel Precision/Pixel Perfect理念 - 6.Shape Editing的Round下拉菜单"
+============================
+四.Text
+
+1.粘贴:Sketch粘贴的是Rich Text，即会将文字的font,size,color一起粘贴。
+    eg.可以直接从网页复制，到Sketch中粘贴。
+2.调整大小:
+	Text box的大小:在画布中通过鼠标拖动Text Layer，或者在Inspector之2.2)[全局]定位大小旋转图标组中的Size进行输入。
+				  不论在上述两者中如何拖动或输入，只能改变Text Box的Width宽度，Height高度无法拖动或输入进行更改。
+
+				  基于是否更改Text Box的宽度，Text Inspector中的Width对应两种参数状态，Auto和Fixed:
+				  当调整Text Box的宽度时，对应Inspector中的Width为Fixed状态，此时输入文字达到宽度后会自动换行；
+				  若不调整Width宽度，则对应Inspector中的Width为Auto状态，此时只要不敲回车，输入文字就会不断向右延长行宽。
+	文字本身的大小:在2.4-b)[特定]Text Inspector(文字属性)中的Size，进行调整。
+3.Text Inspector
+see "2.4-b)[特定]Text Inspector(文字属性)"
+4.Text Styles
+see "2.5-b)[特定]Shared Text Style下拉列表"
+    //创建Shared Text Style的入口仅在Inspector中，Styled Text列表管理除了在Inspector中也可由Toolbar的Styled Text按钮叫出。
+5.文字路径(Text On Path)
+https://www.sketchapp.com/learn/documentation/text/text-on-path/
+目前感觉有bug.
+6.文字转形状:转换为每个字母均为sub path的Combined Shape.
+		   其实就是文字转曲。
+选中文字图层后，鼠标右键叫出菜单，Convert to Outlines.
+			 Layer->Convert to Outlines
+			 shift+cmd+O[不推荐]
+			 Toolbar的Outlines按钮(经测试，甚至可以选中Shape图层后点击Outlines按钮,不过感觉没什么大用)
+注:官方文档貌似不鼓励这种操作，转换后文字只能当做形状来编辑，很麻烦，而且当字符很多时，会耗cpu和内存。
+
+
+============================
+五.Image
+凡是.jpg等图片类型拖动入Sketch的，都会变为Image Layer,在Layer List中图层图标为一张照片。
+Sketch管这种Image Layer称为Bitmap.
+今后，我将Sketch中的Image Layer，Bitmap，图片类图层三者等效。
+
+1.任意(单个/多个)图层转bitmap
+选中所需图层，Layer->Flatten selection to bitmap.<--貌似没啥用处。
+相关设置见 "十三.Preferences-3.Layers标签项-Flatten Bitmaps"
+2.压缩图片类图层
+选中Image图层，Layer->Image->Reduce Image Size
+注:如果不压缩，太大的图片类图层会导致预览很慢。
+3.替换图片
+选中Image图层，鼠标右击，Replace Image...
+4.编辑Image Layer
+see "一.2.8)[特定]Inspector之Image Edit Mode"
+5.Image Layer的Layer Style之颜色调整
+see "一.2.6+)[特定]Image Layer的Layer Style之Color Adjust"
+
+
+============================
+六.Symbol
+1.Symbol操作
+see "一.界面构成-3.4)Symbol"
+
+MengTo说，Symbol的适用情况为re-use the same elements multiple times,并且一处更新处处生效。
+ 	     比如Status Bar, Navigation bar 或者 Tab Bar.
+另外，对于很多需要复用的但是每次需要有不同变化的，我觉得是不是就弄个编组就好，如果弄成Symbol，每次都要overide一下，但是使用Content Generator这种插件时，直接选中编组中对应的对象图层就能生成内容。
+【待】哪些东西适合用Symbol，哪些东西适合用编组(配合内容生成插件)？
+
+1+)非Nested Symbol的Common example:
+			   Buttons,a cell in a table view.
+			   Text，比如在symbol master中调整text的大小。
+
+			   最常见的是，将可复用的包含Text和Image的块元素创建为一个Symbol
+			   eg.msg短信列表中的每个短信列表项:Text有Name[Tom],Timestamp[8:16 AM],Subject[Trip to China],Body[Hi,We are...]
+			   								然后还有一些Shape比如箭头，五角星什么的。
+			   	  https://www.sketchapp.com/learn/documentation/symbols/editing-symbols/
+			   eg.微信的Chats页面的最近对话列表项:Text有Name[GT511],Body[mom:可爱！太可爱了！],Date[Yesterday]
+			   								  Image有Image[头像]
+	【问】Sketch的ios ui的template中，(Insert->)Symbol->Bottom Bar->Tab Bar，发现底部的5个方框不是图片类型的，但是overides是可以替换为图片的，这是什么类型的？或者说是如何实现的？
+
+
+2.Nested Symbol(嵌套Symbol)
+创建:选中两个或多个Symbol instance后点击Toolbar的Create Symbol按钮，则可创建出一个Nested Symbol.
+Nested Overrides(嵌套Symbol的overrides特性):比方说父级Symbol包含了若干个子Symbol，当子Symbol具有相同大小的其它Symbol时，就会给子Symbol出现一个下拉菜单，里面会显示所有等大的Symbol菜单项，可替换之。
+
+2+)Nested Overrides的Common example:
+	最常见的是，底部tab，作为一个父级Symbol，包含若干个(一般5个左右)相同尺寸的线性矢量图标，这些线性矢量图标本身也是Symbol，
+	这时在画布选中父级Symbol这个底部tab时，就会像一个包含了Text或Image的Symbol那样，Inspector中的overrides区域，就会分别显示出这几个子Symbol并对应下拉菜单项,每个菜单项均含有相同尺寸的Symbol项作为可overide替换项。
+
+3.1)Resizing Symbol
+除了将Symbol当做普通图层进行拖放缩放，还可以对Symbol进行智能拖放(smart resizing)
+//比如在一个Symbol中的某个Layer,我们始终想让它位于正中，或左上角，不论Symbol怎样被拉伸。
+方法:对Symbol master中的各Layer的Inspector区域的Resizing的下拉菜单项中进行四选一:
+			Stretch 	:默认，当resize symbol时，会同时resize其中的layer，layer在Symbol中的相对位置不变。
+			Pin to corner:当resize symbol时，不会resize其中的layer,自动pins the layer to the nearest corner。<--其实不太懂。
+			Resize object:当resize symbol时，会同时resize其中的layer，layer间的相对位置不变。
+						  适用于等比例缩放图标。也适用于缩放Fixed模式的Text Layer(使得其对于父级Symbol instance进行内容自适应换行。见3+例子).
+			Float in place:当resize symbol时，不会resize其中的layer,layer的position’s percentage会保持。
+	然后就可以直接resize Symbol Instance了。
+【待】对于smart resizing，尚需进行测试分析。
+还原:ctrl+左击 被resize的Symbol Instance，选择Set to Original Size，可以将其还原为初始大小。
+
+3.2)Resizing Group
+文档说，Group也能实现smart resizing，经测试，方法为:
+对Group中的各layer的Inspector区域的Resizing的下拉菜单(按照3.1 Resizing Symbol中那样)进行四选一，然后就可以直接resize group了。
+
+注:对编组resizing后，没有类似Symbol Instance那样的还原功能，除非马上cmd+z撤销，否则经过多个步骤后，无法还原。
+
+
+
+3.1+)Smart Resizing Symbol的Common example:
+我觉得，当设计好某个逻辑分辨率后，对于不同的逻辑分辨率的屏幕，我们就要重新做Layout，这时就会涉及到拉伸块元素。
+
+在smart resizing中，现在起码知道第二种Pin to corner和第四种Float in place不会使内部图层产生形变。
+【问】https://www.sketchapp.com/learn/documentation/symbols/resizing-symbols/
+	 中的Resizing Symbols的例子中，改变短信列表页面的左宽度和右宽度时的Name,msg,date,头像元素的自适应是如何实现的？
+【答】经测试，	这样实现：
+	 头像[Shape类型][Pin to Corner] Name[Text类型][Pin to Corner]		Date[Text类型][Pin to Corner]
+	 							   Msg[Text类型][Fixed:在Symbol master中调整其宽度][Resize Object]
+	 注:值得注意的就是Msg这个Text Layer，Fixed宽度，然后smart resizing选择Resize Object下拉菜单项。这样当调整所在父级Symbol instance宽度时，这个Text Layer可以实现自适应换行。
+	 注:总之一共就这四种Smart Resizing模式，如果遇到其它情况，一个个试一遍就行。
+
+3.2+)Smart Resizing Group的Common example:
+跟3.1+一样，一毛一样，在https://www.sketchapp.com/learn/documentation/grouping/groups/
+中的Resizing Groups的例子中，文档同样给了一个改变短信列表页面的左宽度和右宽度的动画。
+
+
+4.Symbol管理
+通过使用"/"对Symbol master的命名来实现(Insert->)Symbol层级菜单分组。
+eg.一个命名为a/b/c/d/e的Symbol master和一个命名为a/b/c/111的symbol master，在(Insert->)Symbol层级菜单中，同属于a->b->c组。
+注:这种通过"/"来分类的方法，同样适用于Shared Styled Text.
+
+重命名Symbol master的位置，可以(在Symbol Page中)直接重命名Layer List中的Symbol图层名称。
+
+【待】我的机子的Sketch(Insert->)Symbol的层级菜单底部并没有Organize Symbols...
+【答】反正最新(43.2)官方帮助文档也没有。之前貌似见过有的，但可能是以前版本吧。
+
+【待】File › New From Template › iOS UI Design 观察一下各个控件的实现及resizing情况。
+
+
+
+============================
+七.Styling-Layer Style
+
+
+see "一.界面构成 - 2.6)[全局]Layer Styles(图层样式)"
+
+1)more global知识
+1.1)快速调整Opacity
+除了在图层对应的Inspector中进行调整，还可以直接点击键盘的数字键来快速设置：
+eg.90%:敲击一下9，或者迅速敲击90
+   93%:迅速敲击93
+注:窍门就是，当敲击单个数字键并且间隔很长时，Opacity就是数字键x10x100%，当迅速依次敲击两个数字键时，Opacity就是(第一个数字键x10+第二个数字键)x100%.
+注:经测试，当连续迅速敲击数字键时，会以堆栈方式只讲最后两次的数字键作为迅速依次敲击进行录入，比如迅速依次敲击12321235763后，Opacity为63%.
+
+1.2)拾色器面板(color picker)
+位置:选中图层后，在Inspector的Fill,Border,Shadow,Inner Shadow中都都有颜色选择，点击后的弹出窗口就会有拾色器面板出现。
+    
+
+这个大拾色器面板是基于HSB(Hue{色相},Saturation{饱和度},Brightness{明度})   的颜色模式(color model)的。
+在Sketch中，颜色的组成实际分两部分：Hex值[总是显示](等价于)RGB值[切换显示](等价于)HSB值[切换显示]
+	 						   A值[总是显示](即Alpha不透明度)
+Sketch使用的HSB颜色模式，值可同时用Hex(比如#FF2D55)
+							   HSB(比如349,82,100)
+							   RGB(比如255,45,85)
+							   来表示。
+					   另外，在拾色器面板中，A值表示Opacity透明度。eg.A值填100，表示Opacity=100%
+
+【问】HSB颜色模式的颜色值为何要用Hex或RGB来表示？它们是什么关系？
+【答】Sketch使用HSB颜色模式。
+	 在拾色器面板中通过HEX值(总是显示)，RGB值(切换显示)，HSB值(切换显示)，A值[即Alpha等价于Opacity](总是显示)来显示颜色。
+	 通过点击拾色器面板中的RGB按钮来切换HSB值和RGB值的显示。
+构成:			取色大区域
+    取色放大镜	色相滑块				常用色下拉列表
+    			不透明度滑块
+    Hex值 		HSB值/RGB值 			A值(Alpha,不透明度值)
+    Global Colors/Global Gradients/Global Patterns:
+    							   在任一个sketch文档中新建，在其它sketch文档中也会同步，所以这个应该是跟着Sketch程序本身走的。
+    			  				   点击+号添加当前色至Global Colors/Global Gradients/Global Patterns，三指拖动出区域删除。
+    Document Colors/Document Gradients/Document Patterns:
+    							   如果新建空文档，这项就是空的，如果使用Template，这项可能有色。这个只跟随当前sketch文档走。
+    							   点击+号添加当前色至Document Colors/Document Gradients/Document Patterns，三指拖动出区域删除。
+ 
+    注:6种填充方式中的5种会出现拾色器面板，但其构成中的最后两项有所不同:
+       Flat Color中出现Global Colors,Document Colors 
+       Linear Gradient/Radial Gradient/Angular Gradient中出现Global Gradient/Document Gradient 
+       Pattern Fill中出现Global Pattern/Document Pattern 
+
+
+
+see "七.Styling-Layer Style - 1.3)渐变(Gradient) - d)eyedropper按钮(取色放大镜)"
+see "十五.Other(其它) - 5.Color Management"  <---色域/色彩空间
+
+
+
+
+1.3)渐变(Gradient)
+渐变的使用体现在Layer Style的Fill和Border中，表现为Fill有三种渐变填充，Border有三种渐变描边。
+不论是渐变填充，还是渐变描边，都涉及了三种渐变:
+Linear Gradient(线性渐变),Radial Gradient(径向渐变),Angular Gradient(角度渐变).
+官网介绍在此，不过我觉得这个没必要讲了。
+https://www.sketchapp.com/learn/documentation/styling/gradients/
+
+
+
+a)选取点:调整饱和度和明度
+	横向调整选取点，会使颜色more or less vibrant(生动)，此时调的是Saturation(色相).
+	纵向调整选取点，会调整颜色的Brightness(明度).
+
+b)色相滑块(Hue Slider)：第一个水平滑块，横向调整第一个水平滑块，会调整颜色的Hue(色相)，亦称为Tone(色调).
+c)不透明度滑块(Alpha Slider)：第二个水平滑块，横向调整第二个水平滑块，会调整颜色的Opacity(不透明度)，亦称为Alpha.
+//貌似Sketch中的Alpha，都与不透明度有关。
+
+d)eyedropper按钮(取色放大镜):可点击，也可通过ctrl+C快捷键启动，启动后会弹出取色放大镜。需要注意的是ctrl+c快捷启动时，需保证Sketch处于激活状态(也就是说你选中其它app后ctrl+c调用的是其它app的ctrl+c功能，而不是Sketch的)。
+					    注:不选中任何图层时ctrl+C只能通过取色放大镜看看颜色值(HSB和HEX同时显示)，点击后不会将颜色保存，也不会将颜色应用到任何位置。
+						   选中图层后，ctrl+c弹出取色放大镜并左击某颜色区域后，会将所取颜色赋予当前图层的Fill(填充)色。
+						   点击Inspector的Fill,Border,Shadow,Innder Shadow中之一的颜色选择后，ctrl+C(当然也可以点击取色吸管)弹出取色放大镜并左击某颜色区域后，会将所取颜色赋予当前图层的对应Layer Style中.
+  注:ctrl+c取色放大镜是可以在Sketch外部获取(比如桌面,浏览器,其它app等的)颜色的。
+
+see "七.Styling-Layer Style - 1.2)拾色器面板(color picker)"
+see "十五.Other(其它) - 5.Color Management"  <---色域/色彩空间
+
+e)常用色:位于色相滑块和不透明度滑块右边。
+		点击后，会出现常用色列表，并会显示使用次数。
+
+1.4)Layer Style的对象及Layer Style值
+Vector,Pencil,Shape,Text的Layer Style是完整的5个:Fill,Border,Shadow,Inner...,Gussian...      see "一.界面构成 - 2.6)[全局]Layer Styles(图层样式)"
+Image的Layer Style除了完整的5个，还多了一个Color Adjust. 	see "一.界面构成 - 2.6+)[特定]Image Layer的Layer Style之Color Adjust"
+Symbol和Group只有一个Shadow
+
+
+2~6)5种Layer Style介绍
+
+2)Fills(填充):see "一.界面构成  -  2.6)[全局]Layer Styles(图层样式):  Fills(填充)"
+2.1)快速进行Fills的全部子项批量显示/隐藏:有个快捷的方法就是点击F键。
+
+2.2)Fill Settings
+Inspector的Fill section(当至少有一个Styling子项时会出现Fill section)的右边齿轮。
+a)对象:最小子路径(的填充方式,什么地方填充，什么地方挖空)
+      注:如果一个Combined Shape(复杂形状)是多个子路径的布尔加，那么即使某个子路径某个区域按照某个规则被挖空(没填充上)，如果该区域被别的填充上的子形状进行布尔加，那么总效果当然是此区域被填充。
+  [坑]注:经测试发现，一个Combined Shape的多个子路径进行布尔加时，他们仍是当做整体对待的，某个子路径的位置，会影响到另一个子路径其它区域是否被填充上。
+b)两种规则:
+Even-odd rule(奇偶规则):空间中的某点P发出无数条射线，若与复杂交叉路径组成的形状，有奇数个交点，则该点在此形状中，该点应该被填充；若与形状的路径边有偶数个交点，则该点不在形状中，不该被填充。
+					  注:P点发出的射线，不要与形状的(两个路径边的转折锚点)端点相交，而是应该与形状的路径边相交，这样计数。
+					  窍门:经观察，凡是有形状最外边参与围成的区域，(在even-odd规则西)都是(属于形状内部)该被填充的。
+					  经观察，even-odd规则的空心要比none-zero规则的多。
+
+None-zero rule(非零环绕规则):非零在内部要填充，否则在外部不填充(表现为挖空)。
+						   路径边方向从射线左边穿过+1，从右边穿过-1。
+						   路径边按照一笔画顺时针方向。
+
+总之，这是个坑，一般如果不遇到子路径含有路径边叠加情况的，也就是子路径是简单的闭合路径，那么两种规则的效果都是一样的该子路径被填充，此时Fill settings可忽略。
+但是应该记住有这么回事，一旦遇到含有路径边交叉的复杂子路径时，这两个规则的效果就不能忽略了。
+
+/*
+个人感觉，这个最典型地适用于Vector(钢笔工具)弄出的一笔画的线条有交叉的单个最小子路径的填充(不涉及任何子路径的布尔运算，就是单个子路径，怎么填充)
+eg.比如用Vector点出5个锚点(最后一下点回第一个锚点)的(只有一个图层的)五角星，even-odd时填充就是中间就是空心无填充，none-zero就是全实心填充。
+*/
+/*
+This option allows you to define how to fill complex shapes with overlapping paths(有交叉的路径线条).
+Non-Zero will fill the entire shape.							<---问题是也不一定就一定没有空心，是否有空心是要按原理去推导的。
+Even-odd will preserve(保留) the holes(空心) in overlapping path. <---问题是哪个区域的空心保留不填充，哪个区域填充(成实心)，是需要按照原理去推导的。
+*/
+/*
+这里设置的是一种winding rule:
+2D中，non-zero winding rule是 非零环绕规则/非零绕组规则。
+	 even-odd rule是 奇偶规则。
+Nonzero-rule：https://en.wikipedia.org/wiki/Nonzero-rule
+Even–odd rule：https://en.wikipedia.org/wiki/Even–odd_rule
+这个坑比较大。
+*/
+
+3)Borders(描边)::see "一.界面构成  -  2.6)[全局]Layer Styles(图层样式):  Borders(描边)"
+3.1)不同类型layer的子项数目
+Text Layer只能添加一个Broder，而不能添加无限个broder子项。
+其它图层可以添加无限个Broder子项，按上方可见区域覆盖下方区域进行覆盖(覆盖不上的则会显示出下方broder效果)。
+
+3.2)Border Options
+Inspector的Broder section(当至少有一个Styling子项时会出现Broder section)的右边齿轮。
+即非闭合路径的两个端点的形状:三种端点描边形状-方头(默认)，圆头，方头2							<---没啥用处
+(可以是闭合或非闭合路径的)(至少有)三个锚点形成的一个角:三种锚点描边形状-方头(默认)，圆头，圆头2	<---了解即可
+其始位置形状:None(默认),<-,空心箭头,|-		<---没啥用处
+结束位置形状:None(默认),->,空心箭头，-|		<---没啥用处
+虚线描边设置:虚线长度值Dash，虚线间隙值Gap           <---有时有用
+		   eg.3  2:表示虚线长3px,间隔2px后再画一条长3px虚线，以此类推。
+		   eg.MengTo关于Border Options有一个Apple Watch rings的例子:对于一个圆环路径，仅使用一组Dash[0到860逐渐增大],Gap[往大里设,弄个2000]，则出现一个圆环进度条逐渐递增效果。
+		   虚线长度值Dash，虚线间隙值Gap，虚线长度值Dash，虚线间隙值Gap
+		   eg.5431:表示虚线长5px,间隔4px后再画一条长3px虚线，间隔1px后再画5px虚线，以此类推。
+
+		   注:默认是0 0 0 0.表示描边非虚线。
+
+
+
+4)Shadow:see "一.界面构成  -  2.6)[全局]Layer Styles(图层样式):  Shadows(投影)"
+5)Inner Shadow:see "一.界面构成  -  2.6)[全局]Layer Styles(图层样式):Inner Shadows(内阴影)"
+
+6)Blurs(模糊): see"一.界面构成  -  2.6)[全局]Layer Styles(图层样式):		模糊"
+
+
+============================
+七+)Shared Layer Style
+see "一.界面构成  -  2.5-a)[特定]Shared Layer Style下拉列表"
+
+============================
+八.Group
+编组操作:选中多个图层后，cmd+G 
+取消编组操作:选中编组后，shift+cmd+G
+see "二.广义Layer的操作 - 2.2)编组内部图层的选择"
+see "六.Symbol - 3.2)Resizing Group"
+============================
+九.Artboard 
+Artboard是在Canvas(画布)上的。
+see "一.界面构成 - 3.2)Artboard"
+Artboard的作用，一方面在responsive web design(响应式网页设计)中，可以迅速地弄出不同设备的界面大小，并将设计弄进不同的界面尺寸。
+			  另一方面在设计mobile app时，设计multiple view时，每个(相同尺寸的)Artboard可以很方便地作为一个界面的"容器"。
+
+创建Artboard:键盘A后:创建单个:
+				   在画布上三指拖动一块区域，可创建区域大小的一个Artboard;
+				   在Inspector中选择某个分辨率，可创建出对应大小的Artboard;
+
+				   批量创建单个:
+				   当创建了单个Artboard后，cmd+D，可再次创建一个等大的Artboard.
+				   另:复制粘贴图层及编组中也有选中图层后进行cmd+D的操作。
+
+				   批量创建不同个:
+				   在Inspector中点击某个编组(iOS Devices,Responsive Web Design,Material Design,
+				   						   iOS Icons,Android Icons,Mac Icons,tvOS Icons,
+				   						   Paper Sizes,
+				   						   Custom)，则可创建编组中所有分辨率的Artboard(每个分辨率都创建一个)。
+
+移动Artboard:在画布上点击Artboard的title，然后三指拖动。[建议]
+									   方向键微调。
+									   Inspector中也可调位置。
+
+切换Artboard:快捷键fn+左或右方向键		
+============================							   
+十.Page 
+see "一.界面构成 - 3.1)Page"	
+
+
+============================
+十一.Canvas(画布)
+1.Sketch的画布具有无限尺寸，每个Page对应一个画布。
+
+2.放置元素
+跟Page上放置的元素一样...
+画布上放置的元素，只可能是Artboard，或者游离于Artboard之外的Layer(Shape或Text Layer)，
+							    或者游离于Artboard之外的Layer的编组Group，
+								或者游离于Artboard之外的Combined Shape(复杂形状图层)
+								或者游离于Artboard之外的Symbol.
+
+3.画布拖动与缩放
+画布的拖动:空格+(三指)拖动
+画布的缩放:最高放大256000%，最低缩小为1%。
+		 (两指)拖动进行缩放。
+		 cmd+"+"画布放大一倍,cmd+"-"画布缩小一倍
+
+4.两种View(Vector View,Pixel View)
+Sketch中有两种View Model,默认是Vector View，可以切换到Pixel View。
+切换方式:View->Canvas->Show Pixels(打勾)	[不推荐]
+        Toolbar的Show Pixels按钮			[推荐]
+        ctrl+P 							[推荐]
+用途:使用Pixel View的好处是，当需要导出尤其是导出icon时，这种模式可以让你确保形状边缘尽量crisp.
+/*Ideal for creating icons as you can make sure shape’s bounds are sitting on full pixel values.*/
+Sketch默认是Vector View，不论把画布放大多少倍，都以矢量方式呈现，这虽然看起来很爽，但当导出image为PNG并将其放大(至少大于100%)仍会看到锯齿。
+注:Vector View和Pixel View在画布100%缩放时无差别，但当Zoom In放大画布时就会有差别。
+//符合Pixel Precision理念,已归档 "十六.Pixel Precision/Pixel Perfect理念"
+
+5.Show Pixel Grid
+//注意与6.Grids(网格)区分，不是一个概念。
+效果:在具有填充色的地方看得会比较明显，默认颜色是浅灰色接近白色，形状就是方格，应该是1px x 1px的方格，平铺。
+貌似43.2版本目前不能设置此pixel grid的线条颜色。
+开关方式:View->Canvas->Show Pixel Grid[不推荐]
+		ctrl+X[推荐]
+		[废弃]Toolbar的Show Grid按钮[推荐] 【待】我也不知道此Show Grid按钮是否对应View Pixel Grid
+										 【答】经测试，Toolbar的Show Grid按钮并非对应此View Pixel Grid,而是对应快捷键ctrl+G.
+用途:显示Pixel Grid的好处是，any edges that do not align with the pixel grid will be visible when you zoom in past 600%.
+//符合Pixel Precision理念。已归档 "十六.Pixel Precision/Pixel Perfect理念"
+
+6.Grids(网格)
+//注意与5.View Pixel Grid区分，不是一个概念。
+Sketch有两种Grids:Regular Grid和Layout Grid.
+适用对象:当Page上没有Artboard时，对Page的画布应用。
+		当Page上有Artboard时，对(该Page的所有)Artboard应用，可以分别对各Artboard显示/隐藏(Regular/Layout)Grid，但是设置是全局生效的。
+用途:移动画布上的任何对象时，当靠近(Regular/Layout)Grid时会被吸附到(Regular/Layout)Grid上。
+/*When grids are enabled, any objects will snap to the grid when moved, and will ignore snapping to smart guides if the option is enabled.*/
+
+6.1)Regular Grid
+用途:Android和iOS的app中最为实用
+开关方式:View->Canvas->Show Grid[不推荐]
+        ctrl+G[推荐]
+        Toolbar的Show Grid按钮[推荐]
+设置:View->Canvas->Grid Settings...
+MengTo说，Material Design提倡8dp的Grid system.
+         /*Material Design encourages a 8 dp grid system in order for shapes, text and baselines to fall perfectly into those lines. This promotes better spacing and cleanly divided layouts. */
+         iOS没有具体要求，但是大多数情况，最好有至少8pt的padding和margin.
+         /*Mostly, you are encouraged to have a minimum padding and margin of 8 pt.*/
+         具体到设置上，就是在View->Canvas->Grid Settings中:Grid Block Size:8px
+         												 Thick Lines every:0px
+
+【待】Regular Grid的设置
+【答】参见MengTo的给手机设计Android和iOS的app的建议，Grid Block Size:8px
+												Thick Lines every:0px
+
+
+
+6.2)Layout Grid
+用途:Web Design时最为实用。
+	MengTo说，除了Web，对iPad和tvOS interfaces也实用。
+	共性就是对较大的屏幕界面情况实用(for bigger screens that occupy multiple columns and call for clean divisions)
+开关方式:View->Canvas->Show Layout[不推荐]
+		ctrl+L[推荐]
+		Toolbar的Show Layout按钮[推荐]
+设置:View->Canvas->Layout Settings...
+
+【待】Layout Grid的设置
+
+6.3)Make Grid(其实是一种复制粘贴)
+这其实是一种对于对象的复制排列操作，跟Regular Grid,Layout Grid无任何关系。
+
+对象:针对单个(Shape,Text等)图层或单个编组或单个Artboard(针对Artboard没有实际操作意义)。
+操作:选中对象后，Toolbar的Make Grid按钮[推荐]
+			  Arrange->Make Grid...[不推荐]
+用途:可以将单个对象复制出table表格效果，即可控制复制出几行(Row)，行距(Margin)，几列(Column)，列间距(Margin)，这4个参数。
+
+
+7.Ruller(标尺)
+开关:View->Canvas->Show Rulers[不推荐]
+    ctrl+R[不推荐]
+    Toolbar的Show Rulers按钮[不推荐,占地方]
+    建议:平时就默认打开吧。
+拖动:可以拖动标尺的刻度，并非固定的。
+
+8.Guides(参考线)
+基于Ruller,当Ruller隐藏时，参考线也不会显示。
+用途:移动画布上的任何图层时，当靠近参考线时会被吸附到参考线上。
+删除:单个删除:可以单个拖动到边缘删除。
+	批量删除:可以ctrl+左击 (垂直/水平)Ruller区域，Remove All Vertical/Horizontal Guides.
+
+9.Smart Guides(智能参考线)
+这其实跟参考线没一毛关系。
+这是Sketch的重要特性，当移动或resize对象时，会显示智能参考线，用以辅助。
+默认是打开的[推荐]，可以在View->Canvas->Show Smart Guides中取消打勾。
+
+
+
+============================
+十二.Exporting(导出)
+https://www.sketchapp.com/learn/documentation/exporting/
+
+1.1)可导出的对象:当前Page的所有可导出的Slice,Artboard,(具有"导出标记"的)Layer,(具有"导出标记"的)Group编组
+1.2)导出命名:当对象名(即Sketch的Layer List中出现的名称)不含"/"符号时，导出的export scale按照 {前缀}对象名{后缀}.format格式进行命名。
+		    当对象名含有1个或多个"/"符号时，比如对象名为a/b/c，前缀为gt，format为png的一个export scale，则导出:文件夹a/文件夹b/gtc.png 
+    注:Sketch仅凭借   (.../.../){前缀}对象名{后缀}.format进行export scale的导出，若有重复，则必定会存在漏导出。
+
+
+
+2)"导出标记"
+我将对象的Inspector最下方具有"Export"区域(其中包含一个或多个倍率，前/后缀，格式)的状态，称为具有"导出标记"。
+这种状态，可以通过点击不具"导出标记"的对象Inspector区域最下方的Make Exportable得到。
+
+其中，Slice是自带"导出标记"的，并且其导出标记无法删除。
+
+	 Artboard情况比较特殊，有时自带"导出标记"，有时又需手动添加"导出标记"，感觉有Bug的样子，为保险起见，今后统一要求，给需要输出的Artboard手动添加"导出标记"。
+/*仅保留
+	 Artboard虽然新建后，不带"导出标记"，但貌似有时在点击Toolbar的Export时仍然会出现在导出列表中，作为导出项。
+	 经测验，即使删除Artboard的"导出标记"，使其变为右下角为"Make Exportable"状态这样的，点击Toolbar的Export按钮后，仍能在导出列表中显示该Artboard作为导出项，并且导出的是@1x的大小。
+	 eg.一个iPhone7的Artboard逻辑分辨率是375x667,导出为375x667px大小。	
+	 但是当有多个Artboard时，有时又不会在导出列表中显示，总之感觉有Bug的样子。
+*/
+
+     Layer和Group是需要在对应Inspector最底部点击一下Make Exportable一下，才会具有"导出标记".
+
+     具有"导出标记"的对象，才能在点击Toolbar的Export按钮后显示为导出项。
+另:具有"导出标记"的编组和图层，在Layer List中的Layer Preview，会出现一个Slice图标。
+   Artboard不论是否具有导出标记在Layer List中Layer Preview都不会有任何变化。
+   Slices在Layer List中的Layer Preview长得都一样。
+
+
+3)导出方法:
+3.1)常规导出
+方法一-批量导出:确保需要导出的对象具有"导出标记"(Slice自带且不可删除，Artboard默认自带可删除，Layer和编组默认不带需手动进行Make Exportable弄上)，
+			  然后点击Toolbar的Export按钮[推荐](或者File->Export...[不推荐])后可将弹出窗口中显示出的导出项(凡具有"导出标记"的对象都会在此显示为导出项)进行导出。
+方法二-单个快速导出:点击对象的Inspector的最底部Export区域(此时已经是具有"导出标记"的状态)的"Export 对象名称"按钮，则可快速导出本对象在Inspector之Export中设置的一个或多个(size,prefix/suffix,format)组合。
+
+方法三-单个快速导出:直接在Layer List中拖动待导出对象的图层项(适用于图层，编组，Slice,Artboard)直接拖放到Sketch外，若本对象进行了"导出标记"，则仅可快速导出本对象在Inspector之Export中设置的最上方(size,prefix/suffix,format的)export scale。<---仅仅是最上方的export scale会被导出。
+																									 若本对象未进行"导出标记"，则导出一个一倍图的 对象名称.png。
+方法四-单个快速导出:按住alt/opt，直接在Layer List中拖动待导出对象的图层项(适用于图层，编组，Slice,Artboard)直接拖放到Sketch外，若本对象进行了"导出标记"，则仅可快速导出本对象在Inspector之Export中设置的最上方(size,prefix/suffix,)的pdf格式的export scale。<---仅仅是最上方的export scale会被导出。
+																												 若本对象未进行"导出标记"，则导出一个一倍图的 对象名称.pdf。
+方法五-一次性将所有Artboard导出为一个PDF:File->Export Artboard to PDF.
+	  相关设置在Sketch->Preferences->General标签项->Artboard Export:(From the Layer List)Top to Bottom,Bottom to Top,
+	  															 (From the Canvas)Left to Right,Right to Left,Top to Bottom
+	  //【待】Artboard Export的设置待把玩。
+
+
+3.2)Code导出[略]
+3.2.1)CSS代码
+当在Layer List选中一个或同时选中多个图层，选中一个或同时选中多个编组时，ctrl+左击，选择Copy CSS Attributes，然后在任意文本编辑器中粘贴，则会粘贴诸如:
+/* 2/3: */
+background: #D8D8D8;
+border: 1px solid #979797;
+/* 1/2: */
+background: #D8D8D8;
+border: 1px solid #979797;
+
+
+/* Rectangle: */
+background: #DAE500;
+border: 1px solid #979797;
+
+样的CSS代码。/**/中的是对应的图层名称。
+//貌似形状无法弄出来。
+
+3.2.2)SVG代码
+当在Layer List选中一个或同时选中多个图层，选中一个或同时选中多个编组时，ctrl+左击，选择Copy SVG Code，然后在任意文本编辑器中粘贴，则会粘贴诸如:
+
+<svg width="197px" height="343px" viewBox="0 0 197 343" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 43 (38999) - http://www.bohemiancoding.com/sketch -->
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="114" height="78"></rect>
+        <rect id="path-2" x="0" y="0" width="128" height="126"></rect>
+        <rect id="path-3" x="0" y="0" width="96" height="306"></rect>
+    </defs>
+    <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="8/9/2" transform="translate(-88.000000, -170.000000)">
+            <g id="4/2" transform="translate(88.000000, 170.000000)">
+                <g id="2/3">
+                    <use fill="#D8D8D8" fill-rule="evenodd" xlink:href="#path-1"></use>
+                    <rect stroke="#979797" stroke-width="1" x="0.5" y="0.5" width="113" height="77"></rect>
+                </g>
+                <g id="Group" transform="translate(69.000000, 35.000000)">
+                    <g id="1/2">
+                        <use fill="#D8D8D8" fill-rule="evenodd" xlink:href="#path-2"></use>
+                        <rect stroke="#979797" stroke-width="1" x="0.5" y="0.5" width="127" height="125"></rect>
+                    </g>
+                </g>
+            </g>
+            <g id="Group-2" transform="translate(91.000000, 207.000000)">
+                <g id="Rectangle">
+                    <use fill="#DAE500" fill-rule="evenodd" xlink:href="#path-3"></use>
+                    <rect stroke="#979797" stroke-width="1" x="0.5" y="0.5" width="95" height="305"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
+虽然我也看不懂。
+
+
+
+
+
+
+
+
+
+4)导出设置(Export Setting):  <---其实就是对1个或多个export scale的设置
+点击"+"可添加export scale，点击"x"可删除对应的export scale.
+每个export scale由三部分组成，分别是Size,Prefix/Suffix,Format.
+
+Size:默认值是1x，表示输出@1x的。 
+	 经测试，可以填2x,0.5x,1.2x,对应输出@2x,"@0.5x(可能没有这种叫法)"，"@1.2x(可能没有这种叫法)"。
+
+	 还可以填数值+w,或者数值+h，表示输出指定宽度或指定高度的图。	<---不常用
+	 eg.128w,则输出128px宽度的(高度等比例缩放)
+	 	128h,则输出128px高度的(宽度等比例缩放)
+
+Prefix(前缀)/Suffix(后缀)://以下内容为表述方便均以.png为Format.
+						 
+						 export scale的后缀相同时(其实99%的情况，都是使用相同后缀的)，不同export scale就得靠这个前缀或后缀加到文件名中去区分了。
+						 eg.一个对象的Export Setting中，有2个export scale，一个1x的一个2x的，均为png格式，如果此栏填相同的前缀，或相同的后缀，或留空，则只会输出一个export scale(经测试，貌似是最下方的export scale).
+						 eg.一个Slice，名称为gt1，一个Artboard，名称也为gt1，如果均使用PNG为format，并且Prefix/Suffix都不填留空的话，点击Toolbar的Export按钮后，就会在Artboard和Slice的可导出项前面出现三角叹号，坚持导出后，只会有一个gt.png导出(尚未测试是Artboard还是Slice，有何规律)
+						 =>对于可导出的项目，只看文件名(由初始文件名和Prefix/Suffix组成)和format，但凡有重复的，只会导出一个。因此务必要保证每个可导出项目的文件名+format都是唯一的与别的不同的。
+
+						 好在，ios和安卓的规范中，对于导出图片的命名，有对应的要求。
+						 ios:几倍图，则按照:文件名+@几x后缀+.png  (1倍图不用加@1x后缀)
+						 	 eg.一个gt2对象，则输出gt.png,gt@2x.png,gt@3x.png 
+						 Android:Sketch文档说安卓按照:前缀+文件名+.png来输出，其中1x对应mdpi/前缀，1.5x对应hdpi/前缀，2x对应xhdpi/前缀，3x对应xxhdpi/前缀，4x对应xxxhdpi/前缀。
+						 		 【待】但是在实际输出测试中，当我使用Export Presets之Android时，给我输出的却是:文件夹名称/文件名.png，并不是给文件名加前缀，而是把文件放在了前缀为名称的文件夹中了。
+						 
+						 [推荐]如果追求方便，今后就是用Export Presets中的iOS或Android的预设来进行输出，或者自行通过Create Preset设置自定义的Export Preset也行。
+
+
+Format:
+[已阅]https://www.sketchapp.com/learn/documentation/exporting/file-formats/
+Sketch可导出的格式有7种，Bitmap类4种(PNG,
+								 JPG,
+								 TIFF[很像PNG,适用于特定系统,文件体积很大],
+								 WebP[新型的非常适合Web呈现的图像格式，支持不透明度，文件体积可以很小但保真仍不错])，
+					  Vector类3种(SVG[全称Scalable Vector Graphic，是一种Web常用的图像格式，由代码生成。另见 https://www.sketchapp.com/learn/documentation/exporting/code-export/,
+					  				 网页中很常用]
+					  			  PDF[可用于文档，但现在很多Application也开始使用PDF作为assets和simple icons,
+					  			  	  比如iOS现在已经可以使用PDF格式作为iOS assets],
+
+					  			  EPS[常用于印刷，现基本被PDF格式取代])
+
+注:Sketch中的一些特效(effects)是不被Vector类的文件所支持的，所以不会(很好地)显示。
+   比如PDF不支持transparent gradients，比如SVG不支持inner and outer borders等。
+
+
+5)Sharing
+就是具有"导出标记"的Inspector的Export区域右下角的那个Share图标，略。
+
+
+
+6)Exportable Layers or Slices?
+/*Exporting a layer by itself means that no other elements on the Canvas will be exported with it, and its size will be defined by the layer’s bounds. If there’s a layer on top or a background below it, neither of those will be included in the export.*/
+
+7)Export Preset
+调用:在具有"导出标记"的对象的Inspector最下方"Export"区域的preset图标，点击后，可选Default(默认,这算是个preset),iOS[这是preset],Android[这也是preset]
+设置:see "十三.Preferences - 5.(Export) Presets标签项"
+
+
+	
+============================
+十二+.Slice
+1)创建:
+方法一:手动创建所选区域的Slice
+按一下S,然后(三指)拖动出一块区域。
+/*
+With the Slice tool selected, click-and-drag anywhere in the Canvas to define the area. 
+*/
+方法二:创建基于某个图层/编组的区域的Slice
+      方法二.一:先在Layer List点击所选区域对应的编组或图层(之所以这样是要避免被编组挡住)，再按一下S，再在画布上点击对应编组和图层对象。
+      		  则可创建出具有所选编组或图层区域大小的一个Slice.
+      		  创建出此Slice后，可以添加并编辑其export scale.
+	  方法二.二:将所选区域对应的编组或图层弄成具有"导出标记"状态，
+	  		   设定好一个或多个export scale后，
+	  		   在其Inspector之Export区域中，点击一下加号左边，slice preset右边的"Create Separate Slice Layer"切片图标。
+	  		   则可以创建出具有所选编组或图层区域大小的一个具有同样export scale的Slice.
+	  		   当生成Slice后，之前所选区域对应的编组或图层的"导出标记"状态自动消失。
+/*
+It’s possible to create a slice straight from an exportable layer. Simply click the Slice button  in the “Export” title and a new slice layer will be created around the object containing the defined settings.
+In addition, when the Slice tool is enabled, you can also just click on a layer and a new slice will be placed around it.
+*/
+
+2)Slice的3个选项勾
+Trim Transparent Pixels:勾选后，输出时会将多余的透明部分裁切掉。
+Export Group Contents Only:不勾选时，只要在Slice区域范围内，所有在画布上的可见图层不论与本Slice是否位于同一编组，也不论在Layer List中图层上下相对位置，都会显示在Slice中。
+						   当Slice位于编组内部时，此选项可勾选。
+						   					   勾选时，仅显示本(直接)编组内部的图层在本Slice区域范围内的可见部分。
+Background Color:勾选时，可设置透明部分为指定填充色。
+				 eg.Sketch文档说使用这个选项的情况是当导出为不支持透明度的格式比如.jpg时，可以这样弄。
+				 另:Artboard
+
+						   
+
+另:关于Slice的命名，导出设置，与"十二.Exporting(导出)"中的"1.2)导出命名"和"4)导出设置(Export Setting)"一样。
+
+
+============================
+十三.Preferences
+设置:Sketch->Preferences...
+
+0.未包含在Preferences中的设置[略]
+https://www.sketchapp.com/learn/documentation/preferences/
+svgExportCompact，svgExportSkipAssignIdToLayerName，nudgeDistanceSmall and nudgeDistanceBig
+
+1.General标签项
+Auto Save:默认勾选。<---其实可以不勾选,只要养成勤保存的习惯。
+		  【待】Auto Save说明文档看不出啥意思，怎么获取之前版本。
+		  【答】File->Revert To，然后可以选择Last Saved,或者Browse All Versions...
+		  	   有点像Mac OS的Time Machine.
+
+		  【待】有人Auto Save勾选后，Sketch就会很占容量，在哪里删除这些临时文件？
+		  [答]"二十二.技术支持 - 3.清理Revisions文件夹"中提到不建议手动删除，建议使用软件进行清理。但是仍然没给具体位置。
+MengTo说勾选Auto Save仍不够，保险起见，再对Mac OS打开Time Machine，进行双保险。我觉得没必要吧，我连Auto Save都不想在Sketch勾，主要是耗我SSD.
+see "二十二.技术支持 - 3.清理Revisions文件夹"
+
+Pixel Fitting:默认勾选，勾选时，会有两个子选项。	<---建议全勾选。
+			Pixel-fit when resizing layers:默认不勾选，勾选时，resize对象时，其长宽值始终是整数。否则，可能是两位小数。	<---建议勾选。
+			Pixel-fit when aligning layers:默认勾选。勾选时，鼠标(三指)将对象在画布上拖动时，Position位置(x,y)始终是整数。否则，可能是两位小数。	<---建议勾选。
+//符合Pixel Precision理念,已归档 "十六.Pixel Precision/Pixel Perfect理念"
+
+Vector Import:默认不勾选。不勾选时，当导入PDF和EPS时，是可进行矢量编辑的。	<---建议默认不勾选。
+			  勾选时，当导入PDF和EPS时，是当做一个位图(图片)格式，(只能缩放)。
+
+Artboard Export:下拉菜单。  	<---如果必要再调整。
+				默认是(From the Canvas:Left to Right)
+				see "十二.Exporting(导出) - 3.1)常规导出 - 方法五:一次性将所有Artboard导出为一个PDF"。
+
+Sketch Mirror:Show Current Artboard。默认不勾选。
+			 /*勾选时，Connected iOS devices automatically show the same Artboard as the Mac.*/
+/*Should Sketch Mirror always update to show whatever Artboard you have selected on the Mac or should it operate independently?*/
+			 【待】Sketch->Preferences->General标签项-Sketch Mirror 待把玩
+			 see "十四.Sketch Mirror"
+
+2.Canvas标签项   <---标签项里的东西不用管。
+Zoom:Animate Zoom。默认勾选。但经测试貌似没什么用。
+	 Zoom In On Selection。默认不勾选。勾选时通过放大镜点击时会聚焦到当前选中图层，不勾选则对准画布正中。没什么用。
+	 Zoom Back to Previous Canvas Position:默认不勾选。略。
+
+Guides:Color:默认是红色，点击后有色盘。
+			 设置Guides参考线颜色用的。	 
+
+3.Layers标签项
+Enable Click-Through for New Groups:默认不勾选。  <---建议默认不勾选。
+									在画布上点击编组内部元素时，会先被编组挡住。但能通过cmd+左击解决。
+									勾选时，就不会被编组挡住了，然而移动编组就变得很不友好了，所以不建议勾选。
+
+									另:编组文件夹的Inspector中也有Click Through when selecting.作用同上，默认不勾选。<---建议不勾选。
+
+Offset Duplicated Layers:默认不勾选。  <---建议默认不勾选。
+						 勾选时，通过对图层的cmd+D的复制生成的新图层，会在原图层位置上向右偏移10px,向下偏移10px.其实这样没必要。
+						 注:此选项勾选时不会对图层cmd+C,cmd+V生成的新图层进行位置偏移。
+Rename Duplicated Layers:默认勾选。<---这个勾不勾选都无所谓。
+						 勾选时，通过对图层cmd+D的复制生成的新图层的图层名(即Layer List中显示的)，会在被拷贝图层名后加上"(空格)copy"后缀。
+						 注:此选项勾选时不会对图层cmd+C,cmd+V生成的新图层的图层名称有任何影响，cmd+C,cmd+V生成的新图层名与被拷贝图层名一致。
+
+Flatten Bitmaps:to @1x 默认选项。 
+				to @2x 
+此选项对:选中所需图层，Layer->Flatten selection to bitmap有效。
+官方文档说If you are using a Retina display, flattening to a 2x resolution is suggested.
+【待】Layer->Flatten selection to bitmap有什么实际作用？
+
+
+4.Plugins标签项
+我称之为"Prefernce中Plugins标签项窗口"。
+[官方帮助文档]https://www.sketchapp.com/learn/documentation/preferences/plugins/
+[官方收集(第三方)插件]https://sketchapp.com/extensions/
+
+Sketch的插件基本都是第三方开发的，有的免费，有的收费。
+Sketch官方的Extension页面，是官方收集的第三方插件，有的收费有的免费。
+
+Sketch的所有插件都可以在"Prefernce中Plugins标签项窗口"中管理。
+管理入口:Sketch->Preferences->Plugins标签项
+	    Plugins->Manage Plugins...
+	    //以上两者等价。
+
+如果有兴趣制作Sketch插件，可以看看官方如下网址:
+http://developer.sketchapp.com
+
+Legacy Plugnins:是早于Sketch 3.4版本的插件。
+
+5.(Export) Presets标签项
+我将Sketch->Preferences->Presets标签项，称为"(Export )Preset管理窗口"
+see also "十二.Exporting(导出) - 7)Export Preset"
+
+作用:管理export poresets
+ 	可进行增，删，改操作。
+进入方法:可直接通过Sketch->Preferences->Presets标签项 进入。
+		也可在具有"导出标记"的对象的Inspector最下方"Export"区域的preset图标，点击后，选择Create Preset...或者Edit Presets...
+		//这两种方法进入的是同一个窗口。
+
+设为默认:在"(Export )Preset管理窗口"中，export preset项目左边的单选按钮，当被选中时，表示该export preset项是默认的，即在将对象弄为"导出标记"时立即显示出一个或多个export scale所对应的export preset项。
+		注:系统原先自带的名称为Default的export prest,这个Default名字是可以改的，真正决定其是否是默认的条件是要在"(Export )Preset管理窗口"中选中单选按钮。
+
+6.(Sketch )Cloud (Beta)
+是一个free service,但是需要在Sketch的Sketch->Preference->Cloud标签中Sign Up注册一个免费的Sketch云账号,貌似只能VPN才能成功。
+已通过VPN成功Sign Up,使用盗版Sketch也可以直接Upload到官方云！
+注册账号:Q85邮箱,1lovesketch22.
+
+成功注册Sketch云账号后，可将当前打开的Sketch文件上传到云，生成一个对应的link下载链接，可供他人下载。
+有2种分享方式，一种是所有人均可下载，一种是凭密码下载。
+
+============================
+十四.Sketch Mirror
+	   在iPhone或iPad上(或任何其它安卓机型上)实时预览。
+	   【问】Sketch Mirror能否在笔记本,电脑上通过wifi连接使用浏览器预览，应该也可以吧？
+	   [答]貌似都可以，因为本质上都是用浏览器预览。/*whether the recipient is on their iPhone, iPad or Windows machine, they can open the link and view the entire design.*/
+	   连接:连接1:wifi同局域网
+	   	    连接2:USB(貌似只支持ios设备通过数据线连接mac)
+	   	    【待】连接3:貌似有文章说可以不仅用局限于局域网wifi(Make Sketch’s ‘local sharing’ work anywhere:https://medium.com/sketch-app-sources/make-sketch-s-local-sharing-work-anywhere-4d6d2fd0016d)
+	   	    		 但此文章发布于老旧Sketch版本，所以尚不知到最新版Sketch是否也能突破wifi限制。
+
+	   显示:显示1:任何机型手机浏览器输入诸如http://192.168.1.109:49213/
+	   				个人感觉，显示1必然通过连接1的方式，不可能是连接2的方式。
+	   	    显示2:iOS机型可在App Store"免费"下载Sketch Mirror.
+	   eg.连接1+显示1:经测验，三星S7+可通过在浏览器中输入http://192.168.1.109:49213/直接通过浏览器访问之，不需要安装任何app软件。
+	   另:连接2+显示2	也可行。
+	      连接1+显示2也可行。
+
+	   或曰，ios设备下载Sketch Mirror，可以通过wifi或usb与macbook上的Sketch连接。
+	   		任何设备通过自带浏览器，可以通过wifi与macbook上的Sketch连接。
+
+MengTo说:实时预览时的体验，左右滑动可切换Artboard，上下滑动可切换Page，双击可放大或fit the screen.	
+
+
+============================
+十五.Other(其它)
+1.Template:
+Template其实就是一个Sketch文件，只不过此文件中通常有很多弄好的symbol,shared text style等，可以拿来即用，最典型的莫过于 iOS UI Design和Material Design这两个template.
+调用:File->New From Template
+    初次打开Sketch时，可在"Sketch欢迎界面"中打开template.
+"Sketch欢迎界面":初次打开Sketch时，会显示"Sketch欢迎界面"(Sketch’s welcome window),也可以通过Help->Welcome to Sketch来打开这个"Sketch欢迎界面"。
+添加:File->Save as Template...  <---我将这种自行添加的Template成为"用户自定义Template"
+    
+    注:除了使用Sketch自带的Template，通常还可以下载第三方的Template并另存为Template便于调用,比如Facebook也经常放出iOS的GUI.
+
+
+    另:用户自定义模板的Custom Preview:就像Sketch欢迎界面中系统template(in-built template)那样有个缩略图。
+							  	   将相同名称的.png文件放在用户自定义模板文件的同级路径中(即用户自定义模板文件夹路径)。
+							  	   图片大小:虽然没有限制，但是为了显示效果pixel perfect，Sketch官方建议非R屏94 × 94 px，R屏188 x 188 px.
+
+
+删除:貌似只能从"User Template Folder"中删除"用户自定义Template文件"。
+    方法是，在"Sketch欢迎界面"中，右击(或ctrl+左击)对应的自定义Template项，点击Reveal in Finder，然后就会出现用户自定义模板文件夹(这个文件夹称为User Templates Folder,位置官网说是~/Library/Application Support/com.bohemiancoding.sketch3/Templates,不过反正能从这里打开)，里面是以此Template为文件名的一个.sketch格式文件。
+    将此文件夹中的用户自定义模板文件项删除，重启Sketch，则"Sketch欢迎界面"中对应自定义Template消失(即被删除了)。
+
+"User Templates Folder"进入入口:初次打开Sketch，在Template页面中，右击(或ctrl+左击)任一Template项，
+							  若此Template是"用户自定义Template文件"则点击Reveal in Finder， 
+							  若此Template是系统Template，则点击Show User Templates Folder，
+							  打开的都是同一个"User Templates Folder".
+							  此文件夹只放"用户自定义Template文件"。
+"User Templates Folder"路径:Sketch官方文档说，路径是:~/Library/Application Support/com.bohemiancoding.sketch3/Templates
+
+
+
+2.Presentation Mode
+View->Presentation Mode
+经测试，这种模式其实就是隐藏了Layer List和Toolbar和Inspector区域，只展示画布。
+此种模式除了不显示上述三大区域，其余操作(如通过快捷键插入对象，拖放对象，双击编辑Shape形状，删除对象等)均可执行，但由于三大区域不显示，操作很受掣肘，很明显，此种Mode最适合展示。
+再次View->Presentation Mode可取消此种模式。
+
+3.Importing
+Sketch可打开的文件格式有:
+.Sketch
+PNG,JPG,TIFF,WebP <---bitmap image
+SVG,PDF,EPS		  <---Vector
+AI,PSD格式只能作为一个flattened图层打开.
+
+4.Performance
+应当了解的一些会影响Sketch的执行效率的操作:
+Blur:Blur数量越多，blur radius越高，Sketch越慢，因为需要render更多的pixel.
+Shadow:不论是inner还是outer，都与Blur是等效的，也是需要render.
+Multiple Pages:不建议在一个画布放很多Artboards,尽量分散到不同Page中去。
+			   see "【问】Multiple page在实际项目中，是做什么用的？ -好处2"
+(Text )Convert to Outlines：虽然将文字转曲是 a great and useful feature.
+							但是not recommended to convert entire sentences and paragraphs to outlines.
+							【问】所以说，弄UI时，到底将文字转不转曲？
+							【问】是转曲操作本身会卡，还是转曲后显示会卡？
+/*
+https://www.sketchapp.com/learn/documentation/text/convert-to-outlines/
+文字转轮廓(类似Illustrator的"文字转曲")
+*/
+
+5.Color Management   <---【待】其实这个Color Management学得比较染
+https://www.sketchapp.com/learn/documentation/other/color-management/
+
+see "七.Styling-Layer Style - 1.2)拾色器面板(color picker)"
+see "七.Styling-Layer Style - 1.3)渐变(Gradient) - d)eyedropper按钮(取色放大镜)"
+
+5.1)Colors in General
+
+颜色经常用RGB(Red,Green,Blue)值，或者HSB/L (Hue,Saturation,Brightness/Luminosity)值来表示。
+	但前提是知道颜色所在的color space(色彩空间/色域)。
+
+【问】同一个颜色，如果想转换到另一个色域，怎么转？
+/*If you convert a color to a different color space, you’re in effect changing your triangle whilst trying to maintain the same position on the canvas. 
+The RGB values of your color will change as the triangle determines the co-ordinate’s space. 
+There’s also a real possibility that your original color was at the edge of its color space triangle and now falls outside the new triangle. The visible color will have to change slightly to fit back into the new triangle. 
+In short: converting colors between color spaces is dangerous because your colors might look different afterwards.*/
+
+web使用的色彩空间是sRGB，iOS没提到色彩空间。
+Safari浏览器遵循W3C标准使用的色彩空间是sRGB
+Google Chrome浏览器使用你的显示器的色彩空间，所以如果你的显示器有过调校，其RGB值可能会与safari稍有不同。
+//不同浏览器使用的color space不同，导致同一颜色在不同浏览器中的显示颜色出现细微的偏差。
+Preview软件会遵循图片中声明的适用的色彩空间来显示图片，但是貌似最终还要(转换为/)按显示器的色域来显示出来。
+=>所以同一张图片，可能在Safari,Chome,Preview中看到的色彩是不同的。
+
+本地存储图片时，图片文件包含了大量的RGB值信息，并且通常会在文件中声明出RGB值适用的色彩空间。
+在线图片有时为了节省bandwidth(带宽)，有时会删除color profiles这种对色彩空间的声明(即经常看到的Save for Web,这样会把图片中声明的色域类型删除以减小文件体积,Sketch也可以进行这样的操作)，因为大多浏览器(如Safari)基本是将所有图片都看成是sRGB色彩空间的(甚至当图片声明为不色彩空间时)。
+
+
+see also "F:\UI\UIer\4)软件Master\1)精通Photoshop\[置顶]2016-10-10-wizNote设计理论(PS功能深入)\Photoshop混合模式.txt"
+
+5.2)Colors in Sketch
+Sketch认为绝大多数Sketch用户的设计是for web 或者for mobile的.
+由于web使用的色彩空间是sRGB,作为mobile的iOS没提到色域,<---这里，Sketch没有考虑Android的感受
+Sketch使用RGB值存储颜色信息，
+Sketch对于显示则是使用显示器的色域(color space of your monitor)(screen’s profile)来显示，以此来保证至少在本机上你选取的(其它程序上的某个区域的)颜色跟你看到的显示效果是一致的。
+对于Sketch输出的image，Sketch将其RGB值的色域对应为sRGB，并会在image的metadate中存储其色域为sRGB.
+/*When we export an image, we interpret our color values in the sRGB colorspace. We also save the color space in the metadata*/
+=>Sketch输出的image，用Safari看是极好的，都是sRGB色域。
+
+然而，Sketch和Preview软件可能颜色显示效果不一致:
+Sketch中显示image时，用的是显示器的色域。
+Preview软件显示image时，it may be treating the image as being sRGB, then converting it to the screen’s profile.
+这时可能就会使得观察到的颜色不一致。
+
+另外，Then again, Preview and Safari may not agree either.
+
+
+【问】为何Preview要按照sRGB色域来显示？不是说按照图片本身的色域类型来弄么？
+【问】又说最终要按照显示器的色域来展现，那么是否对于浏览器，甚至任何软件，最终都得转换为显示器的色域来显示出来？
+
+
+Just keep in mind that using the screen color picker to pick colors from various windows cannot possibly guarantee keeping the RGB values consistent.
+
+============================
+十六.Pixel Precision/Pixel Perfect理念
+
+//fractional(adj.小数的,分数的)
+//fractional position:位置(x,y)坐标不为整数(而出现小数位数)
+//fractional digits(数字{复数}):小数数字
+//fractional numbers(数字{复数}:小数数字
+
+//full numbers:整数[自译]。
+//sub-pixel:亚像素。
+			表现为exported bitmap asset 可能存在blurry edges(模糊的边缘/边缘模糊的).
+//(Exported )pixel perfect asset
+//(Exported )Half-pixels asset
+
+
+1.Designing in 1x as a base
+当Retina的机型首次发布时，设计师们都喜欢设计2x resolution，但当iPhone加入Plus机型引入3x后，如果再以2x进行设计，那么往3x转时就得拉伸放大1.5倍，这么做的结果是当个位数为奇数时，放大1.5倍会得到一个小数。
+这种拉伸1.5倍得到小数，在位置上或者在尺寸上，都会产生问题。
+所以设计师们又回到了1x resolusion进行设计，这样当向2x,3x转时，尺寸不会出现小数位数。
+=>按照(iOS逻辑分辨率)从1倍图着手进行设计。（这样转换为2x,3x时尺寸不会出现小数位数，符合pixel perfect理念）
+
+MengTo说:For iOS, I recommend designing at 1x with the iPhone 6 (375 x 667 pt), since that is currently by far the most popular resolution.
+我觉得，可能是因为他文章没更新，并且他配的动画截图看到他的Artboard只有iPhone6的尺寸没出现iPhone7的，现在17年5月应该用IPhone7的了。
+
+
+
+2.Show Pixels与Show Pixel Grid
+see "十一.Canvas(画布) - 4.两种View" - Vector View(默认),Pixel View 之 Pixel View:Toolbar的Show Pixels按钮	-放大画布时(至少大于100%)可看到边缘锯齿。
+see "十一.Canvas(画布) - 5.Show Pixel Grid" - ctrl+X[推荐] - 有填充的地方会有1 x 1px的方格，平铺。
+
+【问】对于十六.Pixel Precision/Pixel Perfect理念 - 3,4,5的方法，一个Shape上的各个锚点的位置，是否也会自动为整数？从而不用像Photoshop专题8那样进行锚点微调？
+
+3.Inspector的Position(X,Y)和Size(Width,Height)  <---防止sub-pixels的手动法
+时刻观察对象图层的Position和Size,不要出现小数,就不会出现sub-pixels(亚像素)从而导致诸如边缘模糊的情况发生。
+
+如果位置(x,y)出现小数会导致fractional position
+如果尺寸(Width,Height)出现小数会导致ractional numbers/fractional digits
+两者均会导致(cause) the rendering of sub-pixels(亚像素)，使得exported bitmap asset成为一个边缘模糊的Half-pixels asset，而非pixel perfect asset.
+
+
+4.Round to Nearest Pixel edge 					<---防止sub-pixels的自动法
+对象:任何图层对象
+入口:Layer->Round to Nearest Pixel Edge[不推荐]
+	 Toolbar的Round to Pixel[推荐]
+效果:将执行Round to Pixel的图层对象，从Position和Size方面进行align the edges with the pixel grid. 
+    /*Sketch will automatically align the edges with the pixel grid. This works for both the Position and Size values. */
+	//我的理解就是对应Inspector中，使对象图层作为一个整体，使其Position(x,y)和Size(Width,Height)不出现小数。
+注:此效果无法对双击Shape后的单个锚点的位置Position(x,y)进行整数化，只针对对象图层整体调整。
+   所以对单个锚点的位置的调整，还是在锚点对应Inspector中手动将Position(x,y)整数化吧。
+eg.当向Sketch导入icons时，执行此操作，应该养成习惯。
+
+5.Pixel fitting 								<---防止sub-pixels的自动法
+入口:Sketch -> Preferences -> General tab -> Pixel Fitting
+效果:两个选项均勾选，则resize时Size(Width,Height)是整数，(三指)拖动时位置Position(x,y)是整数
+	总之resize和拖动ends up on a full pixel edge.
+see "十三.Preferences - 1.General标签项" - Pixel Fitting <---建议全勾选。
+
+
+6.Shape Editing的Round下拉菜单 <--- pixel rounding preference(in Edit mode)
+双击Shape进入路径编辑模式时，有个Round下拉菜单。
+/*
+For example, when designing tiny icons, you can disable the pixel rounding preference for complete freedom of point movement. 
+However, if you want to ensure that your shape’s edges are consistent, enabling Round to half pixels or Round to full pixels edges will snap your vector points to half or full pixels respectively.
+*/
+经测试，此参数是调整锚点的手柄的点的位置。
+	  Round:None.  			(Don not round to nearest pixels)
+	  Round:Half Pixels.	(Round to half pixels)
+	  Round:Full Pixels.	(Round to full pixel edges)
+经测试，即使设置为Round:Full Pixels，在调整完锚点的手柄后，本对象图层的Size或Position仍然可能出现小数，还得Round To Pixel一下。这大概也就是此项并没有归入"十六.Pixel Precision/Pixel Perfect理念"的原因。
+
+【待】现在已知Shape Editing的Round下拉菜单只影响调整锚点的手柄点位置，并且官方文档说设为Half Pixels或Full Pixels可以保证shape’s edges are consistent，这是什么意思？
+     这个作用到底是什么？
+
+另:see "三.Shape"
+
+
+
+============================
+二十.待分类
+
+2.Toolbar的customize及快捷键
+MengTo认为，常用操作最好牢记键盘快捷键，剩下的不好记的但是会频繁使用的，放入Toolbar中。
+
+3.属性参数的输入
+3.1)调整
+在属性输入框下方，三指左右移动；
+在属性输入框中， 输入数字；
+			  (可配合按住Shift)上下方向键。
+			  可输入数字及+,-,*,/公式，Sketch可直接出结果。
+3.2)Tip:
+a)
+radius input field for rectangles中：
+			   可使用/符号，分别给四个角赋予不同的圆角参数，顺序依次是左上，右上，右下，左下。
+			   如果之后的值省略，则系统默认后面未输入的值与紧挨的一个值保持一致。
+			   eg. 20:表示四个角的圆角均为20.
+			   	   10/0:表示除了左上圆角为10，其余圆角均为0.
+			   	   0/10/30:表示左上圆角为0，右上圆角为10，右下和左下均为30.
+			   	   20/0/20/10:左上20，右上0，右下20，左下0.		   	   
+当然，圆角矩形(U)的四个圆角除了可以在上述圆角矩形的Radius中进行调整外，还可以在画布中双击进入路径编辑模式，分别编辑其4个Straight类型的锚点的corner圆角参数。
+
+													   //shape’s bounds are sitting on full pixel values.
+
+
+
+
+============================
+二十一.快捷方式
+
+画布的拖动:空格+(三指)拖动
+鼠标右击:按住ctrl鼠标左击
+
+画布全局显示:cmd+1	<---等价于Photoshop双击手型图标
+1:1显示:cmd+0		<---等价于Photoshop双击放大镜	
+//图层跳转:在Layer List上点击某个图层时，配合cmd+2，可直接在画布中跳转到此图层并放大。	 
+cmd+"+"画布放大一倍,cmd+"-"画布缩小一倍
+
+
+锁定图层:cmd+shift+L，或者，按住opt然后鼠标移动到图层上方左击出现的lock图标。
+		注:对处于隐藏状态的图层使用cmd+shift+L时，仍为隐藏状态，只有当点击eye图标后才会切换为锁定状态。
+取消锁定图层:cmd+shift+L，或者在Layer List中点击图层对应的lock图标。
+
+隐藏/显示:cmd+shift+H，或者在Layer List中点击图层对应的eye图标。
+		 Layer List面板中，可对编组或图层进行显示/隐藏操作。隐藏后，反而会出现eye图标。
+
+
+
+Shape转mask:ctrl+cmd+M
+
+Adding Layer快捷操作:shift+(三指)拖动，矩形变正方形，椭圆变正圆。常用。
+				    alt+(三指)，中心变化效果。不常用。
+				    shift+opt/alt+(三指)，矩形边正方形，椭圆变正圆，同时具有中心变化效果。常用。
+				    空格+(三指)，位置调整。    	<---这个空格很好用。好用。
+				    shift+空格+(三指)，保持矩形变正方形，保持椭圆变正圆，进行位置调整。好用。
+
+在画布中选择图层操作:按住Option/Alt键(三指)拖动时，只会选中完全在拖动区域中的图层。	<---不常用，仅了解。
+				  //If you hold down the Option key as well, it will only select layers that lie entirely within the bounds of the Rectangle.
+重叠图层的选择之方法二:按住option/alt,隔山打牛,但会被编组遮挡,故今后此法废弃,改为二.2.2)的cmd法。	//sf:二.2.1
+鼠标在画布中点击元素时:按住cmd可实现无视编组阻挡的Layer List中一次高亮跳转。  <---有用。 sf:二.2.2
+图层跳转:在Layer List上点击某个图层时，配合cmd+2，可直接在画布中跳转到此图层并放大。	
+
+
+复制粘贴图层及编组
+cmd+c,cmd+v:在Layer List面板选中，或在画布中，均可选中待复制的图层或编组，执行cmd+c,cmd+V，此时会在原地生成一份复制的图层或编组。
+cmd+d:在Layer List面板，或在画布中，均可选中待复制的图层或编组，执行cmd+d,此时会在原地生成一份复制的图层或编组。<--相当于Photoshop中在图层面板中ctrl+j一键复制。
+      另:对Artboard进行cmd+D也会duplicate复制出一个同样尺寸的Artboard.
+opt/alt:在画布中，选中待复制的图层或编组，按住opt/alt，三指移动到所需位置，松开三指，松开opt/alt，此时会在新位置生成一份复制的图层或编组。[推荐]
+		当然，也可按住opt/alt在Layer List中三指拖动待复制的图层或编组，松开三指，松开opt/alt.[不推荐]
+		注意:使用opt/alt法时，一定要先松开三指，再松开opt/alt.否则不会复制成功。
+
+
+
+图层名称搜索:cmd+F
+
+导出: Toolbar的Export按钮。
+     或者通过File->Export...叫出。
+	 注:由于当前mbp的破解Sketch版本点击Toolbar的Export按钮后有bug，所以暂且今后通过File->Export...进行导出操作。
+
+图层的resize:选中图层后，按住cmd，通过方向键可以每次改变1px的尺寸，此时按住shift键再通过方向键每次可改变10px的尺寸。
+图层的图层样式随图层等比例缩放:选中图层(或Artboard)，然后cmd+k(或者Edit->Scale...)
+
+
+添加锚点:按住cmd，可在两个锚点连线的正中间位置添加锚点。[推荐]
+
+旋转图层:也可以选中图层后，按住cmd，然后拖动聚焦的8个点的任意一个进行旋转。
+
+Combined Shape的Splitting操作:选中Combined Shape,Layer->Path->Split
+//Splitting操作没有Toolbar快捷按钮
+
+Shared Text Style的撤销编辑:
+在修改了某个Shared Text Style实例后，如果想撤销此Text Layer的修改返回原Shared Text Style状态，只需按住
+alt/opt按钮点击Inspector中对应此Shared Style右边出现的返回图标即可。
+
+文字转形状:shift+cmd+O[不推荐]
+
+复制粘贴整个Layer Style到另一个Layer:选中需要复制其Style的图层：Edit->Copy Style 或alt/opt+cmd+C
+	   							  再选中需要粘贴Style的图层：Edit->Paste Style 或alt/opt+cmd+V
+
+快速调整Opacity:
+除了在图层对应的Inspector中进行调整，还可以直接点击键盘的数字键来快速设置：
+eg.90%:敲击一下9，或者迅速敲击90
+   93%:迅速敲击93
+注:窍门就是，当敲击单个数字键并且间隔很长时，Opacity就是数字键x10x100%，当迅速依次敲击两个数字键时，Opacity就是(第一个数字键x10+第二个数字键)x100%.
+注:经测试，当连续迅速敲击数字键时，会以堆栈方式只讲最后两次的数字键作为迅速依次敲击进行录入，比如迅速依次敲击12321235763后，Opacity为63%.
+
+快速进行Fills的全部子项批量显示/隐藏:有个快捷的方法就是点击F键。
+
+eyedropper按钮:Ctrl+C调出取色放大镜
+/*
+eyedropper按钮(取色放大镜):可点击，也可通过ctrl+C快捷键启动，启动后会弹出取色放大镜。
+							 注:不选中任何图层时ctrl+C只能通过取色放大镜看看颜色值，点击后不会将颜色保存，也不会将颜色应用到任何位置。
+							    选中图层后，ctrl+c弹出取色放大镜并左击某颜色区域后，会将所取颜色赋予当前图层的Fill(填充)色。
+							    		  点击Inspector的Fill,Border,Shadow,Innder Shadow中之一的颜色选择后，ctrl+C(当然也可以点击取色吸管)弹出取色放大镜并左击某颜色区域后，会将所取颜色赋予当前图层的对应Layer Style中.
+*/
+
+/*
+扭曲:
+按住cmd可对单个点进行扭曲，不过不常用。
+
+任意(单个/多个)图层转bitmap:选中所需图层，Layer->Flatten selection to bitmap.<--貌似没啥用处。
+相关设置见"十三.Preferences-3.Layers标签项-Flatten Bitmaps"
+
+*/
+
+当创建了单个Artboard后:cmd+D，可再次创建一个等大的Artboard.
+另:复制粘贴图层及编组中也有选中图层后进行cmd+D的操作。
+//D(Duplicate)
+
+切换Artboard:快捷键fn+左或右方向键
+
+编组操作:选中多个图层后，cmd+G 
+取消编组操作:选中编组后，shift+cmd+G
+
+画布的Vector View,Pixel View的切换:
+	Toolbar的Show Pixels按钮			[推荐]
+	ctrl+P 							[推荐]
+
+
+
+画布View Pixel Grid:ctrl+X[推荐]
+				   虽然View->Canvas->Show Pixel Grid[不推荐]
+				   注:无对应Toolbar按钮
+
+Regular Grid开关:ctrl+G[推荐]
+				View->Canvas->Show Grid[不推荐]
+				Toolbar的Show Grid按钮[推荐]
+
+Layout Grid开关:ctrl+L[推荐]
+				View->Canvas->Show Layout[不推荐]
+				Toolbar的Show Layout按钮[推荐]
+/*
+标尺开关:View->Canvas->Show Rulers[不推荐]
+    	ctrl+R[不推荐]
+    	Toolbar的Show Rulers按钮[不推荐,占地方]
+    	建议:平时就默认打开吧。
+*/
+
+============================
+二十二.技术支持
+https://www.sketchapp.com/learn/documentation/other/contacting-support/
+
+1.屏幕录制软件Screen Recording
+QuickTime Player:新建:File -> New Screen Recording
+				 保存:File -> Export 
+Recordit:免费:recordit.co
+LICEcap:免费:http://www.cockos.com/licecap/
+
+2.重安装
+2.1)借助卸载软件彻底卸载
+进行clean re-install of Sketch操作，最好使用uninstaller软件，将所有与Sketch相关的文件都删除，比如
+AppCleaner:免费:https://freemacsoft.net/appcleaner/
+2.2)安装Sketch最新版
+彻底卸载后，到Sketch官网下载最新版，输入license key.
+
+3.清理Revisions文件夹
+3.1)
+这个Revisions文件夹，貌似除了Sketch的Auto Save会在此积累，Mac OS的甚至其它app的类似Auto Save貌似也会在此积累。
+/*In order to free up some disk space that may have been used by Sketch and the system’s Auto Save feature,*/
+Sketch官网不建议手动对此文件夹进行删除，容易引起错误，而是推荐了一款软件
+/*Using this app is safer than manually deleting the files, which is likely to cause a whole host of issues.*/
+OnyX:免费:https://www.titanium-software.fr/en/onyx.html
+OnlyX使用步骤:
+    Launch OnyX, enter your machine’s password and confirm the disk verification.
+    Click the “Cleaning” tab then select the “Misc.” pane.
+    Select the “Automatically saved versions of the documents” checkbox, and deselect the other checkboxes that are enabled by default.
+    Click the “Execute” button to clear the Revisions folder.
+注:上述操作不仅删除Versions of Sketch files,还会删除documents created by any other apps that use Auto Save.
+
+【问】这个Auto Save相关的文件夹在什么路径？
+
+另:https://medium.com/@thomasdegry/how-sketch-took-over-200gb-of-our-macbooks-cb7dd10c8163
+   给出了一种清理方法
+
+3.2)从源头上避免Sketch的Auto Save:
+在Sketch->Preference->General标签项-Auto Save 不勾选.
+/*To stop your Sketch documents saving backups and Versions to this location, you can deselect the Auto Save checkbox in Sketch’s preferences, which can be found under the General tab.*/
+see "十三.Preferences" - 1.General标签项 - Auto Save:默认勾选。
+
+
+
+============================
+二十三.优先设置
+Smart Guides:
+Sketch的重要特性，当移动或resize对象时，会显示智能参考线，用以辅助。
+默认是打开的[推荐]，可以在View->Canvas->Show Smart Guides中取消打勾。
+see"十一.Canvas(画布) - 9.Smart Guides(智能参考线)"
+
+Rulers:
+see "十一.Canvas(画布) - 7.Ruller(标尺)"
+开关:View->Canvas->Show Rulers[不推荐]
+    ctrl+R[不推荐]
+    Toolbar的Show Rulers按钮[不推荐,占地方]
+建议:平时就默认打开吧。
+
+Regular Grid:
+MengTo的给手机设计Android和iOS的app的建议，Grid Block Size:8px
+												Thick Lines every:0px
+see "十一.Canvas(画布) - 6.Grids(网格) - 6.1)Regular Grid"
+
+
+Pixel Grid:
+ctrl+X[推荐] - 有填充的地方会有1 x 1px的方格，平铺。
+see "十一.Canvas(画布) - 5.Show Pixel Grid"
+	"十六.Pixel Precision/Pixel Perfect理念"
+
+Auto Save:
+MengTo推荐打开，我觉得应该关闭。
+see "十三.Preferences"
+
+Pixel Fitting:
+十三.Preferences
+默认勾选，勾选时，会有两个子选项。	<---建议全勾选
+拖动Position(x,y)和resize之Size(Width,Height)时都是整数。
+see "十三.Preferences - 1.General标签项"
+	"十六.Pixel Precision/Pixel Perfect理念"
+
